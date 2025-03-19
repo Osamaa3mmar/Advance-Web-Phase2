@@ -10,7 +10,7 @@ import Chat from "./pages/Chat/Chat";
 
 export default function App() {
   return (
-    <>
+    <div className=" bg-[#1e1e1e] min-h-[100dvh]">
      <Routes>
       <Route path="/" element={<AuthLayout/>}>
       <Route path="" element={<Login/>}/>
@@ -27,6 +27,6 @@ export default function App() {
       
       </Route>
       </Routes> 
-    </>
+    </div>
   )
 }
