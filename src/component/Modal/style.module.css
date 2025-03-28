@@ -1,0 +1,12 @@
+.modalAnimation{
+    animation-name: modalOpen;
+    animation-duration: 500ms;
+    transition: 200ms;
+}
+
+@keyframes modalOpen {
+    0%{
+        transform: scale(0);
+    }
+    100%{}
+}

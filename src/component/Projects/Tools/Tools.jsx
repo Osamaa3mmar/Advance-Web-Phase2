@@ -6,7 +6,7 @@ export default function Tools({modelControl}) {
   return (
     <div>
       <h3 className=" text-[#027bff] font-bold text-2xl">Projects Overview</h3>
-      <div className=" flex items-center gap-[40px] justify-between">
+      <div className=" flex items-center gap-[40px] justify-between flex-wrap">
         <Button text={"Add New Project"} onClick={modelControl} type={"primary"}/>
         <SearchBar/>
         <Select/>

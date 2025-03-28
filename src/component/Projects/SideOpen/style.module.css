@@ -1,0 +1,67 @@
+.sideCont{
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    background:rgba(0,0,0,0.6);
+    width: 100%;
+    min-height: 100dvh;
+    z-index: 70;
+    display: flex;
+    justify-content: end;
+}
+
+.sideCard{
+background: red;
+width: 0px;
+transition: 400ms;
+animation-name: sideAnimation;
+animation-duration: 500ms;
+animation-delay: 200ms;
+animation-fill-mode: forwards;
+animation-timing-function: ease;
+padding: 20px 10px;
+}
+.sideContent{
+    opacity: 0;
+    animation-duration: 300ms;
+    animation-fill-mode: forwards;
+    animation-name: opacity;
+    animation-delay: 500ms;
+animation-timing-function: ease;
+}
+@keyframes opacity {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+
+@keyframes sideAnimation {
+    0%{
+        width: 0px;
+    }
+    100%{
+        width: 400px;
+    }
+}
+
+
+.closeBtn{
+    width: 40px ;
+    height: 40px ;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 10px;
+    border: 1.5px solid #027bfe;
+    transition: 400ms;
+}
+.closeBtn:hover{
+    background:#027bfe;
+}

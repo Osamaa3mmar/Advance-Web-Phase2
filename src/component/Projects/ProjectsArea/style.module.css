@@ -1,0 +1,49 @@
+.projectCard{
+    border:2px solid #9c9c9c;
+    border-radius: 20px;
+    padding: 20px 25px;
+    animation-name: card;
+    animation-duration:500ms;
+    animation-timing-function: ease-out;
+    animation-direction: alternate;
+    animation-fill-mode: forwards;
+    filter: blur(10px);
+        rotate: 90deg;
+        transform: scale(0);
+}
+
+@keyframes card {
+    0%{ 
+        
+    }
+    100%{
+        filter: blur(0px);
+        rotate: 0deg;
+        transform: scale(1);
+    }
+}
+
+.progressBar{
+    animation-name: progress;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-direction: alternate-reverse;
+    
+}
+.deadLineDate{
+    border: 1.5px solid rgba(180, 1, 1, 0.6);
+}
+.startDate{
+    border: 1.5px solid rgba(1, 180, 1, 0.6);
+}
+@keyframes progress {
+    0%{}
+    100%{
+       width: 0px; 
+    }
+}
+
+
+.chipBorder{
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+}

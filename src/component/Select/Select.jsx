@@ -1,8 +1,11 @@
-
+import style from './style.module.css';
 export default function Select() {
   return (
-    <div>
-      Select
-    </div>
+    <select className={style.select}>
+      <option className={style.option}>osama</option>
+      <option className={style.option}>osama</option>
+      <option className={style.option}>osama</option>
+      <option className={style.option}>osama</option>
+    </select>
   )
 }
