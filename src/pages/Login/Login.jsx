@@ -1,7 +1,6 @@
+import LoginForm from "../../component/LognForm/LoginForm";
 export default function Login() {
   return (
-    <div>
-      Login
-    </div>
+    <LoginForm/>
   )
-}
+}7
