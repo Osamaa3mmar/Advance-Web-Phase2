@@ -23,7 +23,7 @@ export default function SearchBar() {
 
   }
   return (
-    <div className="  px-3 py-0.5 flex grow rounded-lg max-w-[60%]  items-center justify-start bg-white  border-2 border-[#027bff] hover:outline-[3px] ">
+    <div className="   px-3 py-0.5 flex w-[400px]  grow m-auto rounded-lg   items-center justify-start bg-white  border-2 border-[#027bff] hover:outline-[3px] ">
       <input type="text" ref={searchRef} onBlur={onBlurHandel} onFocus={onFocusHandel} className=' outline-0 grow' placeholder={"Search Project By Title or Description..."} />
       <div onClick={handelSearchBtn} className=" w-[35px] h-[35px] flex items-center justify-center rounded-full  cursor-pointer hover:bg-[#00000022] ">
       {searchIcon?  

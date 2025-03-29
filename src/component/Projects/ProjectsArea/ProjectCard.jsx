@@ -8,22 +8,20 @@ import { Tooltip } from 'react-tooltip'
 export default function ProjectCard({openSide}) {
 
   return (
-    <div  className={style.projectCard +" text-white bg-[#333333]"}>
+    <div  className={style.projectCard +" hover:scale-[1.02] duration-300 text-white bg-[#333333]"}>
         <h3 className=" text-[#027bfe] font-bold text-2xl pb-2">Website Redesign </h3>
         <div className="my-2 line bg-[#9c9c9c] w-[100%] h-[2px] rounded-3xl"></div>
         <p className=" py-1 "><span className="font-bold text-lg">Description:</span> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptates.</p>
         <p className=" py-1"><span className="font-bold text-lg">Students:</span></p >
         <div className=" mt-2 gap-2 flex flex-wrap items-center ">
         <Chip/>
-        <Chip/>
-        <Chip/>
+        
         </div>
         
         <p className=" py-1"><span className="font-bold text-lg">Category:</span> </p>
         <div className=" mt-2 gap-2 flex flex-wrap items-center ">
         <Chip/>
-        <Chip/>
-        <Chip/>
+       
         </div>
 
         <ProgressPar/>
@@ -37,8 +35,8 @@ export default function ProjectCard({openSide}) {
             <AsMuiBtn openSide={openSide} text={"View"} variant={"view"}/>
             <AsMuiBtn text={"Delete"} variant={'delete'}/>
         </div>
-        <Tooltip id="start" content="Start Date !" key={"left"} place="right"  />
-        <Tooltip id="end" content="End Date !" key={"left"} place="left"  />
+        <Tooltip  id="start" content="Start Date !" key={"right"} place="right"  />
+        <Tooltip  id="end" content="End Date !" key={"left"} place="left"  />
     </div>
   )
 }

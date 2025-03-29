@@ -1,3 +1,4 @@
+import SideContent from './SideContent';
 import style from './style.module.css'
 import { IoClose } from "react-icons/io5";
 
@@ -17,7 +18,7 @@ export default function SideOpen({status,closeSide}) {
           </div>
         <div className={style.sideContent}>
           
-        SideOpen
+        <SideContent/>
         </div>
       
       </div>

@@ -8,7 +8,7 @@
     animation-direction: alternate;
     animation-fill-mode: forwards;
     filter: blur(10px);
-        rotate: 90deg;
+        rotate: 30deg;
         transform: scale(0);
 }
 
@@ -28,6 +28,7 @@
     animation-duration: 1s;
     animation-timing-function: ease-in-out;
     animation-direction: alternate-reverse;
+    animation-delay: 100ms;
     
 }
 .deadLineDate{
@@ -37,8 +38,11 @@
     border: 1.5px solid rgba(1, 180, 1, 0.6);
 }
 @keyframes progress {
-    0%{}
+    0%{
+        
+    }
     100%{
+        
        width: 0px; 
     }
 }
