@@ -7,6 +7,7 @@ import Home from "./pages/Main/Home";
 import Projects from "./pages/Projects/Projects";
 import Tasks from "./pages/Tasks/Tasks";
 import Chat from "./pages/Chat/Chat";
+import { ToastContainer, Zoom } from "react-toastify";
 
 export default function App() {
   return (
@@ -26,7 +27,21 @@ export default function App() {
       <Route path="chat" element={<Chat/>}/>
       
       </Route>
-      </Routes> 
+      </Routes>
+      <ToastContainer
+position="top-right"
+autoClose={3000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick={true}
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="dark"
+transition={Zoom}
+limit={2}
+/> 
     </div>
   )
 }

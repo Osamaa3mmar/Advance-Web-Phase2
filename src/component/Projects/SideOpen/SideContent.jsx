@@ -2,7 +2,8 @@ import TaskCard from "../../Task/TaskCard";
 import Chip from "../ProjectsArea/Chip";
 import style from '../ProjectsArea/style.module.css';
 
-export default function SideContent() {
+export default function SideContent({id}) {
+  console.log(id)
   return (
     <div className="text-white  h-[100%]  ">
       <h2 className=" text-[#00bcd4] font-bold text-xl text-center mt-[10px]">Mobile App Development</h2>

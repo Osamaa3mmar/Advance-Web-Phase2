@@ -1,0 +1,19 @@
+
+    .formScroll::-webkit-scrollbar {
+        width: 4px; 
+      }
+      
+      .formScroll::-webkit-scrollbar-track {
+        background: #2e2e2e; 
+        border-radius: 8px;
+      }
+      
+      .formScroll::-webkit-scrollbar-thumb {
+        background: #027cfe8a; 
+        border-radius: 10px;
+        transition: background 300ms;
+      }
+      
+      .formScroll::-webkit-scrollbar-thumb:hover {
+        background: #027cfe; 
+      }

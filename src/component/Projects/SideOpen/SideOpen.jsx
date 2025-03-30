@@ -18,7 +18,7 @@ export default function SideOpen({status,closeSide}) {
           </div>
         <div className={style.sideContent}>
           
-        <SideContent/>
+        <SideContent id={status}/>
         </div>
       
       </div>
