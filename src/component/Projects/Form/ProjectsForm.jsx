@@ -2,7 +2,8 @@ import { useState } from 'react';
 import style from './style.module.css'
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
-export default function ProjectsForm({closeForm,refresh}) {
+import SelectCat from './SelectCat';
+export default function ProjectsForm({closeForm,addProject}) {
   const [project,setProject]=useState({
     title:'',
     description:'',
@@ -11,7 +12,19 @@ export default function ProjectsForm({closeForm,refresh}) {
     startDate:'',
     endDate:'',
     status:''
-  })
+  });
+  localStorage.setItem("users",JSON.stringify([
+    { id: 1, name: "Alice Johnson" },
+    { id: 2, name: "Mohammed Saleh" },
+    { id: 3, name: "Lina Kamal" },
+    { id: 4, name: "James Smith" },
+    { id: 5, name: "Sara Nasser" },
+    { id: 6, name: "David Lee" },
+    { id: 7, name: "Fatima Zahra" },
+    { id: 8, name: "Omar Khaled" },
+    { id: 9, name: "Emily Davis" },
+  ]
+  ));
   const users=JSON.parse(localStorage.getItem('users'));
   const handleChange=(e)=>{
     const { name, value, multiple, options } = e.target;
@@ -34,24 +47,12 @@ export default function ProjectsForm({closeForm,refresh}) {
   }
   const createProject=(e)=>{
     e.preventDefault();
-    const projects=JSON.parse(localStorage.getItem('projects'));
-    if(!projects) {
-      project.id=1;
-      localStorage.setItem('projects',JSON.stringify([project]));
-      
-    }
-    else{
-      project.id=projects.length+1;
-      
-    projects.push(project);
-    localStorage.setItem('projects',JSON.stringify(projects));
-    }
+    addProject(project);
     Swal.fire({
       title: "Project created successfully !",
       icon: "success"
     });
     closeForm(false);
-    refresh(e.target);
   }
  const clearForm=()=>{
   toast.info("Form cleared !");
@@ -78,21 +79,12 @@ export default function ProjectsForm({closeForm,refresh}) {
       <div className="inputContainer flex flex-col gap-2 w-full ">
         <h3 className=" text-lg font-semibold">Students List :</h3>
         <select value={project.students} name='students' onChange={handleChange} multiple={true} size={"5"} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
-          {users.map((user,index)=>{
+          {users?users.map((user,index)=>{
             return <option value={user.id} key={index} className=' '>{user.name}</option>
-            })}
+            }):""}
         </select>
       </div>
-      <div className="inputContainer flex flex-col gap-2 w-full ">
-        <h3 className=" text-lg font-semibold">Project Category :</h3>
-        <select value={project.category} name='category' onChange={handleChange} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
-          <option value="1" className=' '>osama</option>
-          <option value="2" className=' '>ali</option>
-          <option value="3" className=' '>mahmoud</option>
-          <option value="4" className=' '>hosam</option>
-          <option value="5" className=' '>moahmmed</option>
-        </select>
-      </div>
+      <SelectCat value={project.category} handleChange={handleChange}/>
       <div className="inputContainer flex flex-col gap-2 w-full ">
         <h3 className=" text-lg font-semibold">Starting Date :</h3>
         <input value={project.startDate} name='startDate' onChange={handleChange} type="date" className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg"/>

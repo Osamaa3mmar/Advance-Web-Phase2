@@ -1,8 +1,9 @@
 
+import TaskForm from "../../component/Tasks/TaskForm"
 export default function Tasks() {
   return (
     <div>
-      Tasks
+      <TaskForm />
     </div>
   )
 }

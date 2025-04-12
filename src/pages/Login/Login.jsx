@@ -1,8 +1,6 @@
-import { Link } from "react-router-dom";
+import LoginForm from "../../component/LognForm/LoginForm";
 export default function Login() {
   return (
-    <div>
-      <Link  to="/main" style={{color:"white"}}>main</Link>
-    </div>
-  )
+    <LoginForm/>
+   )
 }

@@ -5,9 +5,9 @@ import ProgressPar from "./ProgressPar";
 import style from './style.module.css';
 import { Tooltip } from 'react-tooltip'
 
-export default function ProjectCard({openSide,refresh,project}) {
-  const handleDelete=(id)=>{
-    Swal.fire({
+export default function ProjectCard({openSide,project,deleteProject}) {
+  const confirmAlert= async ()=>{
+    const answer=await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
@@ -15,22 +15,20 @@ export default function ProjectCard({openSide,refresh,project}) {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const projects=JSON.parse(localStorage.getItem('projects'));
-    const newProjects=projects.filter((p)=>{
-      return p.id!=id;
-    })
-      localStorage.setItem('projects',JSON.stringify(newProjects));
-        refresh(project.id);
-        Swal.fire({
-          title: "Deleted!",
-          text: "Project has been deleted.",
-          icon: "success"
-        });
-      }
     });
-    
+    return answer
+  }
+  const handleDelete=async(id)=>{
+    const result=await confirmAlert();
+    if (result.isConfirmed) {
+      deleteProject(id);
+      Swal.fire({
+        title: "Deleted!",
+        text: "Project has been deleted.",
+        icon: "success"
+      });
+    }
+
   }
   return (
     <div  className={style.projectCard +" hover:scale-[1.02] duration-300 text-white bg-[#333333]"}>
@@ -42,11 +40,8 @@ export default function ProjectCard({openSide,refresh,project}) {
         {project&&project.students.length>0?project.students.map((stu,index)=>{
           return <Chip stu={stu} key={index}/>
         }):"No Students !"}
-        
         </div>
-        
         <p className=" py-1"><span className="font-bold text-lg">Category:</span>{project?.category} </p>
-
         <ProgressPar/>
         <div className="date my-3 flex items-center justify-between">
             <p style={{cursor:"pointer"}} data-tooltip-id="start" data-tooltip-offset={5} className={" bg-[rgba(0,255,0,0.2)] px-[10px] py-[4px] rounded-2xl "+ style.startDate }>{project?.startDate}</p>
