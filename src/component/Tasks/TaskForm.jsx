@@ -7,7 +7,7 @@ export default function Tasks(){
         <div className="w-[95%] h-[95%] p-[1px] m-auto flex flex-col justify-start items-center relative overflow-auto">
             <TaskHeader />
             <TaskTable  />
-            <TaskModal  />
+            {/* <TaskModal  /> */}
         </div>
     )
 }

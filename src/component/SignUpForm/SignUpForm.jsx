@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FormGroup from "../FormGourp/FormGroup"
+import { toast } from 'react-toastify';
 
 export default function SignUpForm() {
     const navigate = useNavigate();
@@ -38,10 +39,9 @@ export default function SignUpForm() {
         const userExists = users.find(user => user.username === newUser.username);
     
         if (userExists) {
-            Toast.fire({
-                icon: "error",
-                title: "Username already exists!"
-            });
+            toast.error("Username already exists!")
+            
+           
         } else {
             users.push(newUser);
             localStorage.setItem('users', JSON.stringify(users));
@@ -51,11 +51,8 @@ export default function SignUpForm() {
             setPassword('');
             setUniversityID('');
             setIsStudent(false);
-    
-            Toast.fire({
-                icon: "success",
-                title: "Signed up successfully!"
-            });
+            toast.success("Signed up successfully!")
+            
         }
     };
     

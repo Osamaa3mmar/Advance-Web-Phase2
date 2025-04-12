@@ -16,7 +16,6 @@ export default function FormGroup(props) {
       id={`login-${props.id}`}
       style={{backgroundColor : colors.charcoal , 
               marginBottom : "10px" ,
-              
       }}/>
     </div>
 

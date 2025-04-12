@@ -2,11 +2,10 @@ import { Outlet } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 // import "./style.css"
-import { useState } from "react";
+import { useRef, useState } from "react";
 export default function MainLayout() {
   const [pageId,setpageId]=useState("home");
   const user=JSON.parse(localStorage.getItem("currentUser"));
-
   function toggleSideBar(){
     console.log("p")
     document.querySelector('.sidebar').classList.toggle('w-[77px]');
@@ -18,9 +17,7 @@ export default function MainLayout() {
   const uniqueToNavbar = "bg-[#333] outline-transparent";
   const uniqueToActiveNav = "bg-[#017bff] font-[700] outline-[#017cff80]";
   return (
-     
-
-      <div className="app-layout flex flex-col items-start h-100dvh">
+      <div  className="app-layout flex flex-col items-start h-100dvh">
         <div className=" top-bar flex items-center justify-end w-full bg-[#1e1e1e] !p-[6px_10px] gap-5 border-b-3 border-[#464646]">
             <div className=" name flex items-center gap-[10px] ">
                 <div className=" role-tag !px-[6px] !py-[4px] rounded-[40px] bg-[#87cfeb1a] text-[#87ceeb] outline outline-2 outline-[#87cfeb80] font-lato capitalize text-[12px] font-[600] tracking-[1px]">{user.role}</div>
@@ -30,8 +27,8 @@ export default function MainLayout() {
         </div>
         <div className="content flex w-full">
         <div className=" sidebar max-[770px]:w-[70px] w-[220px] bg-gradient-to-t from-[#303030] to-[#1e1e1e] min-h-[calc(100dvh-52px)] overflow-hidden transition duration-300">
-            <div className="control-sidebar max-[770px]:hidden !p-[20px_15px_0px_15px] flex text-[#e0e0e0] text-[24px] items-center justify-end">
-            <i onClick={()=>{toggleSideBar()}} className="cret fa-solid fa-caret-left bg-[#333] flex items-center  justify-center  w-[30px] h-[30px] rounded-[50%] m-0 p-[0px] cursor-pointer transition-[200ms] hover:outline hover:outline-2 hover:outline-[rgba(1,124,255,0.5)]"></i>
+            <div onClick={()=>{toggleSideBar()}} className="control-sidebar m-auto mt-3 rounded-full bg-[#333] cursor-pointer transition-[200ms] hover:outline hover:outline-2 hover:outline-[rgba(1,124,255,0.5)] max-[770px]:hidden  flex text-[#e0e0e0]  w-[30px] h-[30px]  items-center justify-center">
+            <i  className="cret fa-solid fa-caret-left"></i>
         </div>
             <ul className="flex flex-col !p-[20px_15px] m-0 list-none gap-[10px] overflow-hidden">
             <Link  to="home"  onClick={()=>{setpageId("home")}} className={ commonClasses+ (pageId=='home'?uniqueToActiveNav: uniqueToNavbar) } ><i className="fa-solid fa-house"></i> Home</Link>
