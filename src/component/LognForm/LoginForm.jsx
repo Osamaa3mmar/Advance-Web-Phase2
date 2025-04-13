@@ -79,16 +79,15 @@ export default function LoginForm() {
             }}
           />
 
-          <input
+          <button
             onClick={() => {
               login();
             }}
-            value="Sign In"
             className="text-center w-full text-lg font-medium cursor-pointer mt-2 outline-none 
               border border-gray-700 rounded-md px-4 py-2 border-2 border-transparent 
               transition duration-400 hover:border-gray-300"
             style={{ backgroundColor: colors.forBTN }}
-          />
+          >Sign In</button>
           <p
             className="text-center text-sm text-gray-400"
             onClick={() => {
