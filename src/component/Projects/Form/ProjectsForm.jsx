@@ -3,6 +3,7 @@ import style from './style.module.css'
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import SelectCat from './SelectCat';
+import { useLocation } from 'react-router-dom';
 export default function ProjectsForm({closeForm,addProject}) {
   const [project,setProject]=useState({
     title:'',
@@ -13,18 +14,10 @@ export default function ProjectsForm({closeForm,addProject}) {
     endDate:'',
     status:''
   });
-  localStorage.setItem("users",JSON.stringify([
-    { id: 1, name: "Alice Johnson" },
-    { id: 2, name: "Mohammed Saleh" },
-    { id: 3, name: "Lina Kamal" },
-    { id: 4, name: "James Smith" },
-    { id: 5, name: "Sara Nasser" },
-    { id: 6, name: "David Lee" },
-    { id: 7, name: "Fatima Zahra" },
-    { id: 8, name: "Omar Khaled" },
-    { id: 9, name: "Emily Davis" },
-  ]
-  ));
+  const {pathname} = useLocation(); 
+  console.log(pathname)
+  console.log("first")
+
   const users=JSON.parse(localStorage.getItem('users'));
   const handleChange=(e)=>{
     const { name, value, multiple, options } = e.target;

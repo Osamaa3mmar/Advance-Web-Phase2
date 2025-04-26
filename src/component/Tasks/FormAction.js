@@ -165,7 +165,6 @@ export function openModal() {
     modal.style.display = 'flex';
 }
 
-
 export function closeModal(){
     const modal = document.getElementById('taskModal');
     modal.style.display='none';

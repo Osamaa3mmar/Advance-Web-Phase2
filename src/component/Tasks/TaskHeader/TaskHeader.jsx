@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { SortByHandler } from "../sorting";
 import TaskModal from "../TaskModal/TaskModal";
+import { sortTasks } from "../sorting.js"; // adjust path as needed
 
 export default function TaskHeader() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -19,6 +19,14 @@ export default function TaskHeader() {
     setTasks(storedTasks);
   }, []);
 
+  // React-friendly sort handler
+  const handleSortChange = (event) => {
+    const column = event.target.value;
+    const sorted = sortTasks(tasks, column); // Sort externally
+    setTasks(sorted); // Update React state
+    localStorage.setItem("tasks", JSON.stringify(sorted)); // Persist
+  };
+
   return (
     <>
       <div
@@ -31,7 +39,7 @@ export default function TaskHeader() {
           </label>
           <select
             id="sortSelect"
-            onChange={(event) => SortByHandler(event)}
+            onChange={handleSortChange}
             className="text-white py-2 px-3 border border-gray-600 rounded-md text-[clamp(10px,1vw,20px)] cursor-pointer"
             style={{ backgroundColor: colors.charcoal }}
           >
@@ -51,7 +59,6 @@ export default function TaskHeader() {
         </button>
       </div>
 
-      {/* Render the modal if open */}
       {isModalOpen && (
         <TaskModal
           setTasks={setTasks}
