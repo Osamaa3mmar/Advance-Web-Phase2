@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import Swal from "sweetalert2";
 import style from '../../component/Projects/Form/style.module.css'
-export default function TaskForm({closeForm}) {
+export default function TaskForm({closeForm,trig}) {
     const [task,setTask]=useState({
         id:0,
         name:"",
@@ -17,7 +17,6 @@ export default function TaskForm({closeForm}) {
         status:'',
         dueDate:''
     });
-    console.log(task)
     const [projects,setProjects]=useState([]);
     const [students,setStudents]=useState([]);
     const handleChange=(e)=>{
@@ -55,6 +54,7 @@ export default function TaskForm({closeForm}) {
         else{
             tasks=[task];
         }
+        trig(prev=>!prev);
         localStorage.setItem("tasks",JSON.stringify(tasks));
     }
      const createTask=(e)=>{
@@ -76,7 +76,7 @@ export default function TaskForm({closeForm}) {
         if(students){
             setStudents(students);
         }
-        setTask(prev=>({...prev,id:tasks?tasks.length()+1:1}));
+        setTask(prev=>({...prev,id:tasks?tasks.length+1:1}));
       }
       useEffect(()=>{
         getData();
@@ -131,6 +131,10 @@ export default function TaskForm({closeForm}) {
           <option value="onHold" className=' '>On Hold</option>
           <option value="cancelled" className=' '>Cancelled</option>
         </select>
+      </div>
+      <div className="inputContainer flex flex-col gap-2 w-full ">
+        <h3 className=" text-lg font-semibold">Due Date :</h3>
+        <input value={task.dueDate} name='dueDate' onChange={handleChange} type="date" className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg"/>
       </div>
       <button  className=' bg-[rgba(3,125,255,0.4)] hover:bg-[#027bfe] py-[10px] cursor-pointer duration-300 rounded-lg  flex-1' type='submit'>Add</button>
 

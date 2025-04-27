@@ -1,0 +1,25 @@
+.scroll {
+    overflow-x: auto;
+  }
+  
+  /* Custom scrollbar styles */
+  .scroll::-webkit-scrollbar {
+    height: 6px; /* Thin scrollbar */
+  }
+  
+  .scroll::-webkit-scrollbar-thumb {
+    background-color: #1e1e1e; /* Dark gray thumb */
+    border-radius: 10px; /* Rounded scrollbar */
+  }
+  
+  .scroll::-webkit-scrollbar-track {
+    background-color: #333; /* Track background matches your table */
+  }
+  
+
+@media screen and (max-width:580px) {
+    .scroll{
+        width: 400px !important;
+        margin: auto;
+    }
+}
