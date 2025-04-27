@@ -23,7 +23,7 @@ export default function SearchBar({searchTerm}) {
 
   }
   const handleSearch=(e)=>{
-    searchTerm(e.target.value);
+    searchTerm({title:e.target.value,type:'title'});
   }
   return (
     <div className="   px-3 py-0.5 flex w-[400px]  grow m-auto rounded-lg   items-center justify-start bg-white  border-2 border-[#027bff] hover:outline-[3px] ">

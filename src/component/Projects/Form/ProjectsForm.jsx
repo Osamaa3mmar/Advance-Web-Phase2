@@ -3,7 +3,6 @@ import style from './style.module.css'
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import SelectCat from './SelectCat';
-import { useLocation } from 'react-router-dom';
 export default function ProjectsForm({closeForm,addProject}) {
   const [project,setProject]=useState({
     title:'',
@@ -14,10 +13,6 @@ export default function ProjectsForm({closeForm,addProject}) {
     endDate:'',
     status:''
   });
-  const {pathname} = useLocation(); 
-  console.log(pathname)
-  console.log("first")
-
   const users=JSON.parse(localStorage.getItem('users'));
   const handleChange=(e)=>{
     const { name, value, multiple, options } = e.target;
@@ -73,7 +68,8 @@ export default function ProjectsForm({closeForm,addProject}) {
         <h3 className=" text-lg font-semibold">Students List :</h3>
         <select value={project.students} name='students' onChange={handleChange} multiple={true} size={"5"} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
           {users?users.map((user,index)=>{
-            return <option value={user.id} key={index} className=' '>{user.name}</option>
+            if(user.role!='admin')
+            return <option value={user.id} key={index} className=' '>{user.username}</option>
             }):""}
         </select>
       </div>

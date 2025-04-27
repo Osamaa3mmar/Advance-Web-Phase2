@@ -24,10 +24,10 @@ export default function AdminDashboard() {
       month: "long",
       day: "numeric",
     })
-    setDate(currentDate)
+    setDate(currentDate);
 
     // Get data from localStorage
-    setDashboardData(getData())
+    setDashboardData(getData());
   }, [])
 
   return (

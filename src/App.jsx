@@ -8,6 +8,7 @@ import Projects from "./pages/Projects/Projects";
 import Tasks from "./pages/Tasks/Tasks";
 import Chat from "./pages/Chat/Chat";
 import { ToastContainer, Zoom } from "react-toastify";
+import { CurrentUserContextProvider } from "./Context/CurrentUserContext";
 
 export default function App() {
   return (
@@ -19,7 +20,7 @@ export default function App() {
       <Route path="signup" element={<Signup/>}/>
       </Route>
 
-      <Route path="/main" element={<MainLayout/>}>
+      <Route path="/main" element={<CurrentUserContextProvider><MainLayout/></CurrentUserContextProvider>}>
       <Route path="" element={<Home/>}/>
       <Route path="home" element={<Home/>}/>
       <Route path="projects" element={<Projects/>}/>

@@ -10,10 +10,11 @@ export default function Chip({stu}) {
       toast.error("you must go step by step in the app please clear local Storage and go step by step in the app !");
     }
     else{
-      const current=users.filter((u)=>{
-        return u.id===stu;
+      const current=users.find((u)=>{
+        return u.id==stu;
       })
-      setUser(current[0]);
+      setUser(current);
+      
     }
   }
   useEffect(()=>{
@@ -21,7 +22,7 @@ export default function Chip({stu}) {
   },[])
   return (
     <div className={" bg-[#ffffff44] rounded-2xl py-1 px-2 capitalize "+style.chipBorder}>
-      {user?.name}
+      {user?.username}
     </div>
   )
 }
