@@ -23,3 +23,70 @@
         margin: auto;
     }
 }
+
+.hoverTabelRow{
+  transition: 300ms;
+}
+.hoverTabelRow:hover{
+  background-color:#333 ;
+}
+
+.taskStatusBtn{
+  cursor: pointer;
+}
+.taskStatusBtnBlue{
+  color:#017bff;
+  font-weight: 500;
+}
+
+.taskStatusBtnBlue:hover{
+  border: 1px solid #017bff60;
+  background-color: #017bff15;
+  color: #017bff80;
+}
+
+.taskStatusBtnYellow{
+  color:#ffff00;
+  font-weight: 500;
+}
+
+.taskStatusBtnYellow:hover{
+  border: 1px solid #ffff0060;
+  background-color: #ffff0015;
+  color: #ffff0080;
+}
+
+.taskStatusBtnRed{
+  color:#ff0000;
+  font-weight: 500;
+}
+
+.taskStatusBtnRed:hover{
+  border: 1px solid #ff000060;
+  background-color: #ff000015;
+  color: #ff000080;
+}
+
+.taskStatusBtnGreen{
+  color:#2fff00;
+  font-weight: 500;
+}
+
+.taskStatusBtnGreen:hover{
+  border: 1px solid #2fff0060;
+  background-color: #2fff0015;
+  color: #2fff0080;
+}
+
+
+
+.taskStatusBtnOrange{
+  color:#ff9500;
+  font-weight: 500;
+}
+
+.taskStatusBtnOrange:hover{
+  border: 1px solid #ff950060;
+  background-color: #ff950015;
+  color: #ff950080;
+}

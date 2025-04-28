@@ -5,13 +5,12 @@ import ProgressPar from "./ProgressPar";
 import style from './style.module.css';
 import { Tooltip } from 'react-tooltip'
 import { CurrentUserContext } from "../../../Context/CurrentUserContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 export default function ProjectCard({openSide,project,deleteProject}) {
 
   const {user}=useContext(CurrentUserContext);
-
-
+  const [percent,setPercent]=useState(0);
 
   const confirmAlert= async ()=>{
     const answer=await Swal.fire({
@@ -37,6 +36,30 @@ export default function ProjectCard({openSide,project,deleteProject}) {
     }
 
   }
+  const makePercentage=()=>{
+    const tasks=JSON.parse(localStorage.getItem("tasks"));
+    if(tasks){
+      let total=0;
+      let complete=0;
+      tasks.forEach(task=>{
+        if(task.project.id==project.id){
+          total++;
+          if(task.status=="completed"){
+            complete++;
+          }
+        }
+      })
+      console.log(total,complete);
+      if(total==0||complete==0){
+        setPercent(0);
+      }
+      else
+      setPercent(Math.floor((complete/total)*100));
+    }
+  }
+  useEffect(()=>{
+    makePercentage()
+  })
   return (
     <div  className={style.projectCard +" hover:scale-[1.02] duration-300 text-white bg-[#333333]"}>
         <h3 className=" text-[#027bfe] font-bold text-2xl pb-2">{project&&project.title!=''?project.title:'null'} </h3>
@@ -60,7 +83,7 @@ export default function ProjectCard({openSide,project,deleteProject}) {
         }):"No Students !"}
         </div>
         <p className=" py-1"><span className="font-bold text-lg">Category:</span>{project?.category} </p>
-        <ProgressPar/>
+        <ProgressPar value={percent}/>
         <div className="date my-3 flex items-center justify-between">
             <p style={{cursor:"pointer"}} data-tooltip-id="start" data-tooltip-offset={5} className={" bg-[rgba(0,255,0,0.2)] px-[10px] py-[4px] rounded-2xl "+ style.startDate }>{project?.startDate}</p>
             <p style={{cursor:"pointer"}} data-tooltip-id="end" data-tooltip-offset={5} className={" bg-[rgba(255,0,0,0.2)] px-[10px] py-[4px] rounded-2xl "+style.deadLineDate }>{project?.endDate}</p>

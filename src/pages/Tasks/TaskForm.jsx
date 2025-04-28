@@ -26,7 +26,21 @@ export default function TaskForm({closeForm,trig}) {
             [name]: value
           }));
     }
-
+const getStudents=(id)=>{
+  const currentProject =projects.find((project)=>{
+    return project.id==id;
+  })
+  const students=currentProject.students;
+  const studentsStorage=JSON.parse(localStorage.getItem("users"))||[];
+  const finalStudents=studentsStorage.filter((stu)=>{
+    for(let i=0;i<students.length;i++){
+      if(students[i]==stu.id){
+        return true;
+      }
+    }
+  });
+  setStudents(finalStudents);
+}
 
     const handleSelect=(e)=>{
         const info=e.target.value;
@@ -36,6 +50,7 @@ export default function TaskForm({closeForm,trig}) {
                 id:info.split('__')[1],
                 title:info.split('__')[0]
             }}))
+            getStudents(info.split('__')[1]);
         }
         else{
             setTask(prev=>({...prev,student:{
@@ -68,14 +83,14 @@ export default function TaskForm({closeForm,trig}) {
       }
       const getData=()=>{
         const projects=JSON.parse(localStorage.getItem("projects"));
-        const students=JSON.parse(localStorage.getItem("users"));
+        //const students=JSON.parse(localStorage.getItem("users"));
         const tasks=JSON.parse(localStorage.getItem("tasks"));
         if(projects){
             setProjects(projects);
         }
-        if(students){
-            setStudents(students);
-        }
+        // if(students){
+        //     setStudents(students);
+        // }
         setTask(prev=>({...prev,id:tasks?tasks.length+1:1}));
       }
       useEffect(()=>{
@@ -85,7 +100,7 @@ export default function TaskForm({closeForm,trig}) {
     <form onSubmit={createTask} className={"w-full my-3 px-[15px] flex flex-col gap-3 overflow-auto h-[430px]  text-white "+ style.formScroll}>
          <div className="inputContainer flex flex-col gap-2 w-full ">
         <h3 className=" text-lg font-semibold">Project Title :</h3>
-        <select value={task.project.title+"__"+task.project.id} name='project' onChange={handleSelect} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
+        <select value={task.project.title+"__"+task.project.id} required name='project' onChange={handleSelect} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
           <option value="osama__1" className=' '>Title</option>
           {
             projects?.map((project,index)=>{
@@ -99,15 +114,15 @@ export default function TaskForm({closeForm,trig}) {
       </div>
         <div className="inputContainer flex flex-col gap-2 w-full ">
         <h3 className=" text-lg font-semibold">Task Name :</h3>
-        <input value={task.name} name={'name'} onChange={handleChange} type="text" className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg"/>
+        <input required value={task.name} name={'name'} onChange={handleChange} type="text" className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg"/>
       </div>
       <div className="inputContainer flex flex-col gap-2 w-full ">
         <h3 className=" text-lg font-semibold">Project Description :</h3>
-        <textarea value={task.description} name={'description'} onChange={handleChange} rows={5} className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg" id=""></textarea>
+        <textarea required value={task.description} name={'description'} onChange={handleChange} rows={5} className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg" id=""></textarea>
       </div>
       <div className="inputContainer flex flex-col gap-2 w-full ">
         <h3 className=" text-lg font-semibold">Assigned Student :</h3>
-        <select value={task.student.username+"__"+task.student.id} name='student' onChange={handleSelect} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
+        <select required value={task.student.username+"__"+task.student.id} name='student' onChange={handleSelect} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
           <option value="Students_1" className=' '>Students</option>
           {
             students?.map((student,index)=>{
@@ -123,7 +138,7 @@ export default function TaskForm({closeForm,trig}) {
 
       <div className="inputContainer flex flex-col gap-2 w-full ">
         <h3 className=" text-lg font-semibold">Task Status :</h3>
-        <select value={task.status} name='status' onChange={handleChange} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
+        <select required value={task.status} name='status' onChange={handleChange} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
           <option value="status" className=' '>status</option>
           <option value="inProgress" className=' '>In Progress</option>
           <option value="completed" className=' '>Completed</option>

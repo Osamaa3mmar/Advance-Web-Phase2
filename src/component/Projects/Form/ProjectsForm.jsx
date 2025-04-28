@@ -58,15 +58,15 @@ export default function ProjectsForm({closeForm,addProject}) {
     <form onSubmit={createProject} className={"w-full my-3 px-[15px] flex flex-col gap-3 overflow-auto h-[430px]  text-white "+ style.formScroll}>
       <div className="inputContainer flex flex-col gap-2 w-full ">
         <h3 className=" text-lg font-semibold">Project Title :</h3>
-        <input value={project.title} name={'title'} onChange={handleChange} type="text" className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg"/>
+        <input required value={project.title} name={'title'} onChange={handleChange} type="text" className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg"/>
       </div>
       <div className="inputContainer flex flex-col gap-2 w-full ">
         <h3 className=" text-lg font-semibold">Project Description :</h3>
-        <textarea value={project.description} name={'description'} onChange={handleChange} rows={5} className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg" id=""></textarea>
+        <textarea required value={project.description} name={'description'} onChange={handleChange} rows={5} className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg" id=""></textarea>
       </div>
       <div className="inputContainer flex flex-col gap-2 w-full ">
         <h3 className=" text-lg font-semibold">Students List :</h3>
-        <select value={project.students} name='students' onChange={handleChange} multiple={true} size={"5"} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
+        <select required value={project.students} name='students' onChange={handleChange} multiple={true} size={"5"} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
           {users?users.map((user,index)=>{
             if(user.role!='admin')
             return <option value={user.id} key={index} className=' '>{user.username}</option>
@@ -76,15 +76,15 @@ export default function ProjectsForm({closeForm,addProject}) {
       <SelectCat value={project.category} handleChange={handleChange}/>
       <div className="inputContainer flex flex-col gap-2 w-full ">
         <h3 className=" text-lg font-semibold">Starting Date :</h3>
-        <input value={project.startDate} name='startDate' onChange={handleChange} type="date" className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg"/>
+        <input required value={project.startDate} name='startDate' onChange={handleChange} type="date" className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg"/>
       </div>
       <div className="inputContainer flex flex-col gap-2 w-full ">
         <h3 className=" text-lg font-semibold">Ending Date :</h3>
-        <input value={project.endDate} name='endDate' onChange={handleChange} type="date" className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg"/>
+        <input required value={project.endDate} name='endDate' onChange={handleChange} type="date" className=" outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg"/>
       </div>
      <div className="inputContainer flex flex-col gap-2 w-full ">
         <h3 className=" text-lg font-semibold">Project Status :</h3>
-        <select value={project.status} name='status' onChange={handleChange} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
+        <select required value={project.status} name='status' onChange={handleChange} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
           <option value="status" className=' '>status</option>
           <option value="inProgress" className=' '>In Progress</option>
           <option value="completed" className=' '>Completed</option>

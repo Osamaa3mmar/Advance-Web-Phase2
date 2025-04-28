@@ -27,7 +27,7 @@ export default function Tasks() {
         return task.status.toLowerCase()==searchTerm.toLowerCase();
       })
     }
-    return tempTasks;
+    return tasks;
     
   },[user,searchTerm,trig]);
  
@@ -43,7 +43,7 @@ export default function Tasks() {
       <Modal onClose={modalToggle} status={modal} title={"Add New Task"}>
       <TaskForm trig={setTrig} closeForm={setModal} />
       </Modal>
-      <TaskTable tasks={currentTasks}/>
+      <TaskTable trig={setTrig} tasks={currentTasks}/>
     </div>
   )
 }
