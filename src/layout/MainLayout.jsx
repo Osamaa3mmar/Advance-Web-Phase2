@@ -1,4 +1,4 @@
-import { Outlet,useNavigate } from "react-router-dom";
+import { Outlet,useLocation,useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 // import "./style.css"
@@ -15,9 +15,10 @@ export default function MainLayout() {
 
 
 }
+const {pathname}=useLocation()
 const sidebarRef = useRef(null);
 const cretRef = useRef(null);
-
+  
 const toggleSideBar = () => {
 
 
@@ -31,6 +32,9 @@ const toggleSideBar = () => {
   const commonClasses = "outline outline-2   text-[#e0e0e0] flex items-center gap-[15px] font-lato tracking-px text-[18px] !px-[15px] !py-[10px] rounded-[6px] transition duration-400 cursor-pointer overflow-hidden hover:outline-[#017cff80] ";
   const uniqueToNavbar = "bg-[#333] outline-transparent";
   const uniqueToActiveNav = "bg-[#017bff] font-[700] outline-[#017cff80]";
+
+  
+
   return (
       <div  className="app-layout flex flex-col items-start h-100dvh">
         <div className=" top-bar flex items-center justify-end w-full bg-[#1e1e1e] !p-[6px_10px] gap-5 border-b-3 border-[#464646]">
@@ -46,10 +50,10 @@ const toggleSideBar = () => {
             <i  ref={cretRef} className="cret fa-solid fa-caret-left"></i>
         </div>
             <ul className="flex flex-col !p-[20px_15px] m-0 list-none gap-[10px] overflow-hidden">
-            <Link  to="home"  onClick={()=>{setpageId("home")}} className={ commonClasses+ (pageId=='home'?uniqueToActiveNav: uniqueToNavbar) } ><i className="fa-solid fa-house"></i> Home</Link>
-            <Link  to="projects" onClick={()=>{setpageId("projects")}} className={commonClasses+ (pageId=='projects'?uniqueToActiveNav: uniqueToNavbar)} ><i className="fa-solid fa-diagram-project"></i> Projects</Link>
-            <Link  to="tasks" onClick={()=>{setpageId("tasks")}} className={commonClasses + (pageId=='tasks'?uniqueToActiveNav: uniqueToNavbar) } ><i className="fa-solid fa-list-check"></i> Tasks</Link>
-            <Link  to="chat" onClick={()=>{setpageId("chat")}} className={commonClasses + (pageId=='chat'?uniqueToActiveNav: uniqueToNavbar)} ><i className="fa-solid fa-message"></i> Chat</Link>
+            <Link  to="home"  onClick={()=>{setpageId("home")}} className={ commonClasses+ (pathname.split("/")[2]=='home'?uniqueToActiveNav: uniqueToNavbar) } ><i className="fa-solid fa-house"></i> Home</Link>
+            <Link  to="projects" onClick={()=>{setpageId("projects")}} className={commonClasses+ (pathname.split("/")[2]=='projects'?uniqueToActiveNav: uniqueToNavbar)} ><i className="fa-solid fa-diagram-project"></i> Projects</Link>
+            <Link  to="tasks" onClick={()=>{setpageId("tasks")}} className={commonClasses + (pathname.split("/")[2]=='tasks'?uniqueToActiveNav: uniqueToNavbar) } ><i className="fa-solid fa-list-check"></i> Tasks</Link>
+            <Link  to="chat" onClick={()=>{setpageId("chat")}} className={commonClasses + (pathname.split("/")[2]=='chat'?uniqueToActiveNav: uniqueToNavbar)} ><i className="fa-solid fa-message"></i> Chat</Link>
             </ul>
         </div>
         <div className="page bg-[#333] grow">
