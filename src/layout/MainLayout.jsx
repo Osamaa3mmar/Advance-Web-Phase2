@@ -2,11 +2,12 @@ import { Outlet,useLocation,useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 // import "./style.css"
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
+import { CurrentUserContext } from "../Context/CurrentUserContext";
 export default function MainLayout() {
   const navigate = useNavigate("");
   const [pageId,setpageId]=useState("home");
-  const user=JSON.parse(localStorage.getItem("currentUser"));
+  const {user}=useContext(CurrentUserContext);
   const logout=()=>{
     setpageId("login");
     navigate("/", { state: { from: "/" } });

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import style from './style.module.css'
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import SelectCat from './SelectCat';
+import axios from 'axios';
 export default function ProjectsForm({closeForm,addProject}) {
   const [project,setProject]=useState({
     title:'',
@@ -13,7 +14,36 @@ export default function ProjectsForm({closeForm,addProject}) {
     endDate:'',
     status:''
   });
-  const users=JSON.parse(localStorage.getItem('users'));
+  const [users,setUsers]=useState([]);
+  const getUsers=async ()=>{
+    try{
+      const query = `query Users {
+        users {
+          id
+          username
+          type
+          uid
+        }
+      }`;
+      
+      const {data} = await axios.post("http://localhost:4001/graphql", {
+        query
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      // Filter users to only include students
+      const studentUsers = data.data.users.filter(user => user.type === "student");
+      setUsers(studentUsers);
+    }catch(error){
+      console.log(error);
+    }
+  }
+  useEffect(() => {
+    getUsers();
+  },[])
   const handleChange=(e)=>{
     const { name, value, multiple, options } = e.target;
 
@@ -68,7 +98,7 @@ export default function ProjectsForm({closeForm,addProject}) {
         <h3 className=" text-lg font-semibold">Students List :</h3>
         <select required value={project.students} name='students' onChange={handleChange} multiple={true} size={"5"} className=' duration-200 outline-0 bg-[#333333] p-[6px] border-2 border-[#454545] rounded-lg '>
           {users?users.map((user,index)=>{
-            if(user.role!='admin')
+            if(user.type!='admin')
             return <option value={user.id} key={index} className=' '>{user.username}</option>
             }):""}
         </select>

@@ -79,7 +79,10 @@ export default function SignUpForm() {
         }
     })
         console.log(data);
-        toast.success("")
+        if(data.errors){
+            toast.error(data.errors[0].message);
+        }else
+        toast.success("SignUp Successfully !")
     }catch(error){
         console.log(error);
 

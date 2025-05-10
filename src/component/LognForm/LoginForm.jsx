@@ -4,6 +4,7 @@ import FormGroup from "../FormGourp/FormGroup";
 import SelectBox from "../selectBox/SelectBox";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import { CgLayoutGrid } from "react-icons/cg";
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -43,7 +44,28 @@ export default function LoginForm() {
   //     }
   //   }
   // };
-  const login=async()=>{
+  const login=async(e)=>{
+    e.preventDefault();
+    try{
+      const query = `mutation Login {
+        login(username: "${username}", password: "${password}") {
+          token
+        }
+      }`;
+      const {data}= await axios.post("http://localhost:4001/graphql", {
+        query
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const token = data.data.login.token;
+      localStorage.setItem('token', token);
+      console.log(data);
+      navigate("/main/home");
+    }catch(error){
+      console.log(error);
+    }
   }
   return (
     <div
@@ -58,7 +80,7 @@ export default function LoginForm() {
           padding: "30px",
         }}
       >
-        <form autoComplete="off" className="space-y-2">
+        <form onSubmit={login} autoComplete="off" className="space-y-2">
           <h1 className="text-4xl font-semibold">Sign In</h1>
 
           <FormGroup
@@ -82,9 +104,7 @@ export default function LoginForm() {
           />
 
           <button
-            onClick={() => {
-              login();
-            }}
+           type="submit"
             className="text-center w-full text-lg font-medium cursor-pointer mt-2 outline-none 
               border border-gray-700 rounded-md px-4 py-2 border-2 border-transparent 
               transition duration-400 hover:border-gray-300"
