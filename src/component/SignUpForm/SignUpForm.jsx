@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FormGroup from "../FormGourp/FormGroup"
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 export default function SignUpForm() {
     const navigate = useNavigate();
@@ -9,7 +10,7 @@ export default function SignUpForm() {
     const [password, setPassword] = useState("");
     const [universityID, setUniversityID] = useState("");
     const [isStudent, setIsStudent] = useState(false);
-
+    const [loading,setLoading]=useState(false);
     const colors = {
         charcoal: '#383434',
         neonGreen: '#22c55e',
@@ -22,41 +23,70 @@ export default function SignUpForm() {
         navigate('/login');
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
     
-        const newUser = {
-            username,
-            password,
-            universityId: isStudent ? universityID : '',
-            role: isStudent ? 'student' : 'admin',
-            color: Math.floor(Math.random() * 1000000),
-            id: JSON.parse(localStorage.getItem('users'))?.length + 1 || 1,
-        };
+    //     const newUser = {
+    //         username,
+    //         password,
+    //         universityId: isStudent ? universityID : '',
+    //         role: isStudent ? 'student' : 'admin',
+    //         color: Math.floor(Math.random() * 1000000),
+    //         id: JSON.parse(localStorage.getItem('users'))?.length + 1 || 1,
+    //     };
     
-        const users = JSON.parse(localStorage.getItem('users')) || [];
+    //     const users = JSON.parse(localStorage.getItem('users')) || [];
     
-        const userExists = users.find(user => user.username === newUser.username);
+    //     const userExists = users.find(user => user.username === newUser.username);
     
-        if (userExists) {
-            toast.error("Username already exists!")
+    //     if (userExists) {
+    //         toast.error("Username already exists!")
             
            
-        } else {
-            users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(users));
+    //     } else {
+    //         users.push(newUser);
+    //         localStorage.setItem('users', JSON.stringify(users));
     
-            // Reset form
-            setUsername('');
-            setPassword('');
-            setUniversityID('');
-            setIsStudent(false);
-            toast.success("Signed up successfully!")
+    //         // Reset form
+    //         setUsername('');
+    //         setPassword('');
+    //         setUniversityID('');
+    //         setIsStudent(false);
+    //         toast.success("Signed up successfully!")
+            
+    //     }
+    // };
+    
+    const signUp=async (e)=>{
+        e.preventDefault();
+
+        setLoading(true);
+        try{
+        const query =`mutation CreateUser {
+    createUser(input: { username:"${username}", password: "${password}", type: ${isStudent?"student":"admin"}, uid: ${isStudent?universityID:null} }) {
+        id
+        username
+        type
+        uid
+    }
+}`;
+        const {data}=await axios.post("http://localhost:4001/graphql",{
+            query
+        },
+    {
+        headers:{
             
         }
-    };
-    
+    })
+        console.log(data);
+        toast.success("")
+    }catch(error){
+        console.log(error);
 
+    }finally{
+        setLoading(false);
+    }
+    }
     return (
         <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: colors.charcoal }}>
             <div className="rounded-2xl shadow-[0px_0px_10px_black] w-full max-w-md text-white border-4" 
@@ -65,10 +95,11 @@ export default function SignUpForm() {
                     borderColor: colors.charcoal,
                     padding: "30px"
                 }}>
-                <form autoComplete="off" onSubmit={handleSubmit} className="space-y-2">
+                <form autoComplete="off" onSubmit={signUp} className="space-y-2">
                     <h1 className="text-4xl font-semibold">Sign Up</h1>
                     
                     <FormGroup 
+                    loading={loading}
                         label="Username"
                         onChange={(e) => setUsername(e.target.value)} 
                         value={username}  

@@ -11,7 +11,7 @@ export default function FormGroup(props) {
   return (
     <div className="space-y-2" >
       <label htmlFor={`login-${props.id}`} className="text-2xl block font-medium text-gray-400">{props.name}</label>
-      <input value={props.value} onChange={props.onChange} required type={props.id} 
+      <input disabled={props.loading} value={props.value} onChange={props.onChange} required type={props.id} 
       className="w-full px-3 py-2  border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-neonGreen text-white"
       id={`login-${props.id}`}
       style={{backgroundColor : colors.charcoal , 

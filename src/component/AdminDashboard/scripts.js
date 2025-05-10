@@ -5,14 +5,14 @@ export function getData(){
       
       "projectCount":JSON.parse(localStorage.getItem("projects"))?JSON.parse(localStorage.getItem("projects")).length:0,
       "StudentCount":JSON.parse(localStorage.getItem("users"))?JSON.parse(localStorage.getItem("users")).filter(user=>user.role!="admin").length:0,
-      "TasksCount":JSON.parse(localStorage.getItem("Tasks"))?JSON.parse(localStorage.getItem("Tasks")).length:0,
+      "TasksCount":JSON.parse(localStorage.getItem("tasks"))?JSON.parse(localStorage.getItem("tasks")).length:0,
       "FinishedProjrctsCount":JSON.parse(localStorage.getItem("projects"))?JSON.parse(localStorage.getItem("projects")).filter(t=>getPercent(t.title)==100).length:0
   }
 }
 
 
 function getPercent(project) {
-  let Tasks = JSON.parse(localStorage.getItem("Tasks")) || [];
+  let Tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   let count = 0;
   let count_of_completed = 0;
 

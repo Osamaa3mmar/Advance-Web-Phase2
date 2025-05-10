@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import FormGroup from "../FormGourp/FormGroup";
 import SelectBox from "../selectBox/SelectBox";
 import { toast } from "react-hot-toast";
+import axios from "axios";
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -18,31 +19,32 @@ export default function LoginForm() {
     forBTN: "#50ac4c",
   };
 
-  const login = function () {
-    const users = JSON.parse(localStorage.getItem("users"));
-    JSON.stringify(localStorage.setItem("stay", staySignedIn));
-    if (!users) {
-      toast.error("User Not Found !");
-    } else {
-      const currentUser = users.find((user) => {
-        return user.username === username;
-      });
+  // const login = function () {
+  //   const users = JSON.parse(localStorage.getItem("users"));
+  //   JSON.stringify(localStorage.setItem("stay", staySignedIn));
+  //   if (!users) {
+  //     toast.error("User Not Found !");
+  //   } else {
+  //     const currentUser = users.find((user) => {
+  //       return user.username === username;
+  //     });
 
-      if (currentUser) {
-        if (currentUser.password == password) {
-          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+  //     if (currentUser) {
+  //       if (currentUser.password == password) {
+  //         localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-          toast.success("Signed in successfully !");
-          navigate("/main/home");
-        } else {
-          toast.error("Wrong Password !");
-        }
-      } else {
-        toast.error("User Not Found !");
-      }
-    }
-  };
-
+  //         toast.success("Signed in successfully !");
+  //         navigate("/main/home");
+  //       } else {
+  //         toast.error("Wrong Password !");
+  //       }
+  //     } else {
+  //       toast.error("User Not Found !");
+  //     }
+  //   }
+  // };
+  const login=async()=>{
+  }
   return (
     <div
       className="flex items-center justify-center min-h-screen"
