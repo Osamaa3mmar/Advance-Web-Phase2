@@ -47,7 +47,7 @@ try {
                 role: userData.type, 
                 uid: userData.uid
             };
-            console.log(response.data);
+            // console.log(response.data);
             localStorage.setItem("currentUser",JSON.stringify(formattedUser));
             setUser(formattedUser);
         } catch (error) {
