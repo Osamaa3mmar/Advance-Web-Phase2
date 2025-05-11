@@ -307,7 +307,7 @@ export default function TaskForm({closeForm, refreshTasks}) {
           </div>
 
           <button 
-            disabled={loading}
+            disabled  ={loading}
             className='bg-[rgba(3,125,255,0.4)] hover:bg-[#027bfe] py-[10px] cursor-pointer duration-300 rounded-lg flex-1'
             type='submit'
           >

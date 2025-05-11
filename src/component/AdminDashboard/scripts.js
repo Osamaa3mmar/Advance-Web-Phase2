@@ -12,8 +12,7 @@ export async function getData() {
       finishedProjrctsCount: 0
     };
   }
-  // const studentCount = await getStudentCount(token);
-  // console.log(studentCount);
+  
 
 
   return{
@@ -44,7 +43,6 @@ async function getStudentCount(token) {
   );
 
   const users = response.data?.data?.users || [];
-  console.log(users.filter(user => user.type === "student").length);
   
   return (users.filter(user => user.type === "student").length);
 }
@@ -94,6 +92,7 @@ async function getTaskCount(token) {
 async function getFinishedProjectCount(token) {
   const query = `query Projects {
     projects {
+      id
       status
     }
   }`;
@@ -110,5 +109,35 @@ async function getFinishedProjectCount(token) {
   );
 
   const projects = response.data?.data?.projects || [];
-  return projects.filter(p => p.status === "completed").length;
+  return (projects.filter(async (project) => await isCompletedProject(project,token))).length;
+}
+async function  isCompletedProject(project,token){
+
+  const query = `
+  query ProjectTasks {
+    projectTasks(projectId: "${project.id}") {
+        id
+        status
+    }
+}`;
+
+
+  const response = await axios.post(
+    "http://localhost:4001/graphql",
+    { query },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    }
+  );
+  const projectTasks = response.data?.data?.projectTasks || [];
+
+  for(let task of projectTasks){
+    if (task.status != "completed"){
+      return false;
+    }
+  }
+  return true;
 }

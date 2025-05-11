@@ -14,25 +14,42 @@ export default function AdminDashboard() {
   })
   
   useEffect(() => {
-    // Set current date
-    const currentDate = new Date().toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
+
+
+
+    let d=new Date();
+    const options = {
+  weekday: 'long', 
+  year: 'numeric', 
+  month: 'long',  
+  day: 'numeric',  
+  hour: 'numeric', 
+  minute: 'numeric',
+  second: 'numeric',
+  hour12: true,    
+  };
+
+const formatter = new Intl.DateTimeFormat('en-US', options);
+const currentDate = formatter.format(d);
+setDate(currentDate);
+
+  // Set interval to update date every second
+  const intervalId = setInterval(() => {
+    const d = new Date();
+    const currentDate = formatter.format(d);
     setDate(currentDate);
+  }, 1000); // 1000 ms = 1 second
+
 
     // Get data from localStorage
     getData().then(data => {
       setDashboardData(data);
     });
-    console.log("after dashboard data");
   }, [])
 
   return (
     <div className="flex flex-col gap-2.5 w-4/5 h-full mx-auto p-1.5">
-      {/* <DashboardHeader title="Welcome to the Task Management System" date={date} /> */}
+      <DashboardHeader title="Welcome to the Task Management System" date={date} />
       <StatsCards data={dashboardData} />
       <DashboardChart data={dashboardData} />
     </div>

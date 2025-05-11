@@ -46,6 +46,7 @@ const user=axios.post("http://localhost:4001/graphql",{query},
       border border-[var(--background)]
       flex flex-col
       gap-1   `;
+      
 
     
       const {user}=useContext(CurrentUserContext);
