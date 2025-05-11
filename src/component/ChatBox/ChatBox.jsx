@@ -53,22 +53,20 @@ export default function ChatBox({message, chatReceverName,Messages,msg,setmsg}) 
     `
   const handleInputChange = (e) => {
     const newValue = e.target.value;
-    console.log("on change", newValue);
     setmsg((prevMsg) => {
-        console.log("Updated msg:", newValue);
         return newValue;
     });
 };
-
   return (
     <div className=" chat-box flex items-center justify-center w-full h-full bg-[#1e1e1e] !p-[30px]">
     <div className={"chat-container "+container_style}>
     <div className="messages-box flex-grow h-full flex flex-col overflow-y-auto">
     <div className={"message-info "+messages_info_style}>
-    <h3>{chatReceverName}</h3>
+    <h3 className='capitalize'>{chatReceverName}</h3>
     </div>
     <div className={"messages"+messages_style}>
     {
+      
         Messages?Messages.map((message,index)=>{return <Message key={message.id || index} message={message}/>}):" "
         
     

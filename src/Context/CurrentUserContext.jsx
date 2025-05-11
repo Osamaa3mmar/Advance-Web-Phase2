@@ -34,7 +34,6 @@ try {
             });
             
             if (response.data.errors) {
-                console.error('Error fetching user:', response.data.errors[0].message);
                 localStorage.removeItem('token'); 
                 return;
             }
@@ -47,13 +46,10 @@ try {
                 role: userData.type, 
                 uid: userData.uid
             };
-            console.log(response.data);
             localStorage.setItem("currentUser",JSON.stringify(formattedUser));
             setUser(formattedUser);
         } catch (error) {
             console.error('Error fetching user data:', error);
-        } finally {
-            
         }
     }
 

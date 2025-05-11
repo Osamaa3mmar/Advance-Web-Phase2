@@ -1,37 +1,43 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { CurrentUserContext } from "../../Context/CurrentUserContext";
 
 
 
-  
-const UserList = ({ tempUsers,setID,ID,loadChat}) => {
+
+
+const UserList = ({ tempUsers,setID,ID,loadChat,reciever,setReciever}) => {
     const [currentUser, setCurrentUser] = useState(null);
     const liStyle=`bg-[#444444] w-full text-[#e0e0e0] font-[Lato)] text-[14px] !px-[8px] !py-[10px] rounded-[4px] 
               capitalize transition-all duration-200 cursor-pointer hover:outline hover:outline-2 
               hover:outline-[rgba(1,124,255,0.5)]    max-[550px]:w-auto `
-    useEffect(() => {
-      const storedUser = localStorage.getItem("currentUser");
-      if (storedUser) {
-        setCurrentUser(JSON.parse(storedUser));
-      }
-    }, []);
-  
+              const {user}=useContext(CurrentUserContext);
+
+              useEffect(() => {
+
+        setCurrentUser(user);
+    }, [user]);
+
     
 const getCurrentUser=(id)=>{
   
     const userList =document.querySelector(".user-list");
-    const tempUsers=JSON.parse(localStorage.getItem('users'));
-    const current=JSON.parse(localStorage.getItem("currentUser"));
+    userList.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    const current=user;
+    
     let recever=null;
     setID(id);
-    tempUsers.map((user)=>{
-        if(user.id!=JSON.parse(localStorage.getItem('currentUser')).id){
+    tempUsers?.map((user)=>{
+        if(user.id!=current.id){
             user.id==id?recever=user:null;
           
         }
     
     }).join('')
-    localStorage.setItem('messageHelper', JSON.stringify({current,recever}));
     loadChat();
+    setReciever(recever);
   }
   
     return (
@@ -39,8 +45,8 @@ const getCurrentUser=(id)=>{
         {tempUsers && currentUser ? (
           tempUsers.filter(
               (user) =>
-                user.id !== currentUser.id &&
-                (currentUser.role === "admin" || user.role === "admin")
+                user.id !== currentUser.id &&( (currentUser.role === "admin" || user.role === "admin")|| (currentUser.type === "admin" || user.type === "admin"))
+               
             )
             .map((user) => (
               <li key={user.id} className={liStyle+(user.id==ID?" bg-[#017bff] font-semibold outline outline-2 outline-[rgba(1,124,255,0.5)]":'')}  onClick={() =>{getCurrentUser(user.id)}}>

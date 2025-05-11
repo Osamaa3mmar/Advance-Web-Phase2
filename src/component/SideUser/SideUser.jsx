@@ -1,6 +1,6 @@
 import React from 'react'
 import UserList from '../UserList/UserList'
-export default function SideUser({tempUsers,ID,loadChat,setID}) {
+export default function SideUser({tempUsers,ID,loadChat,setID,reciever,setReciever}) {
   return (
    <div className="sideUser  
   p-[15px_5px_0px_20px]
@@ -23,7 +23,7 @@ export default function SideUser({tempUsers,ID,loadChat,setID}) {
   max-[550px]:h-auto
   max-[550px]:w-full">
            <h3 className='text-[#e0e0e0] font-[Lato] text-[18px] mb-[6px]'>List of Students</h3>
-           <UserList tempUsers={tempUsers} ID={ID} loadChat={()=>{loadChat()}} setID={()=>{setID()}} />
+           <UserList reciever={reciever} setReciever={setReciever} tempUsers={tempUsers} ID={ID} loadChat={()=>{loadChat()}} setID={()=>{setID()}} />
        </div>
   )
 }

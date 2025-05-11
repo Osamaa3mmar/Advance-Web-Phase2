@@ -4,58 +4,57 @@ import SideUser from "../../component/SideUser/SideUser";
 import { useState, useEffect, useContext } from "react";
 import { CurrentUserContext } from "../../Context/CurrentUserContext";
 import axios from "axios";
+import { getMessages, sendMessages } from "./chatPageHandler";
 
 
 
 
 
 export default function Chat() {
+  // getMessages();
   let [tempUsers, setTempUsers] = useState([]);
   const [ID, setID] = useState(-1)
+  const [reciever,setReciever]=useState(null);
   const [chatReceverName, setchatReceverName] = useState("")
   const [Messages, setMessages] = useState([]);
   const [msg, setmsg] = useState("");
-  const message = () => {
+  const message = async () => {
 
-    console.log("messageing")
-    const messageHelper = JSON.parse(localStorage.getItem("messageHelper"));
 
     const newMsg = {
-      sender: messageHelper.current,
-      recever: messageHelper.recever,
+      sender: user,
+      recever: reciever,
       content: msg
     }
-    console.log("new", newMsg)
-    const messages = JSON.parse(localStorage.getItem("messages"));
+    const messages =  await getMessages();
     if (messages) {
       messages.push(newMsg);
-      localStorage.setItem("messages", JSON.stringify(messages));
-
+      sendMessages(newMsg);
     }
     else {
-      localStorage.setItem("messages", JSON.stringify([newMsg]))
+      sendMessages(newMsg);
     }
     message.value = "";
+    setmsg("");
     loadChat();
   }
 
-  const loadMessages = () => {
-    const messages = JSON.parse(localStorage.getItem("messages"));
-    const messageHelper = JSON.parse(localStorage.getItem("messageHelper"));
+  const {user}=useContext(CurrentUserContext);
+  const loadMessages = async() => {
+    let messages =await getMessages();
+    messages=Array.from(messages);
     const tempChat = messages.filter((message) => {
-      return (messageHelper.current.id == message.sender.id || messageHelper.current.id == message.recever.id) && (messageHelper.recever.id == message.recever.id || messageHelper.recever.id == message.sender.id);
+      return (user?.id == message.sender_ID || user?.id == message.recever_ID) && (reciever?.id == message.recever_ID || reciever?.id == message.sender_ID);
     })
-    console.log(tempChat)
-    setMessages([...tempChat]);
+    setMessages([...Array.from(tempChat)]);
 
   };
 
 
   const loadChat = () => {
 
-    const recever = JSON.parse(localStorage.getItem('messageHelper')).recever;
 
-    setchatReceverName(recever ? recever.username : '');
+    setchatReceverName(reciever ? reciever.username : '');
     loadMessages();
   }
 
@@ -85,8 +84,7 @@ const getAllStudents=async(role)=>{
     
     
     const allUsers = response.data.data.users;
-    console.log(allUsers);
-    const students = allUsers.filter(user => user.type === role);
+    const students = allUsers.filter(user => user.type == role);
     
     setTempUsers(students);
   }catch(error){
@@ -98,17 +96,28 @@ const getAllStudents=async(role)=>{
 
 
 useEffect(()=>{
-  const user=JSON.parse(localStorage.getItem("currentUser"));
-    getAllStudents(user.role=="admin"?"student":"admin");
-  console.log("dfdf");
-},[])
+    getAllStudents(user?.role=="admin"?"student":"admin");
+},[user])
 
-  console.log("msg from chat.js", msg)
+useEffect(() => {
+  loadChat();
+  const interval = setInterval(async () => {
+    const messages = await getMessages();
+    const filteredMessages = messages.filter(message => 
+      (user?.id === message.sender_ID || user?.id === message.recever_ID) &&
+      (reciever?.id === message.sender_ID || reciever?.id === message.recever_ID)
+    );
+    setchatReceverName(reciever ? reciever.username : '');
+
+    setMessages(filteredMessages);
+  }, 1000); // Every 3 seconds, for example
+
+  return () => clearInterval(interval); // Clean up on unmount
+}, [reciever, user]);
   return (
     <div className="chat flex gap-[15px]">
-      <SideUser tempUsers={tempUsers} ID={ID} loadChat={loadChat} setID={setID} />
-      <ChatArea ID={ID} message={() => { message() }} chatReceverName={chatReceverName} Messages={Messages} msg={msg} setmsg={setmsg} />
-
+      <SideUser tempUsers={tempUsers} ID={ID} loadChat={loadChat} setID={setID} reciever={reciever} setReciever={setReciever} />
+      <ChatArea ID={ID} message={() => { message() }} chatReceverName={chatReceverName} Messages={Messages} msg={msg} setmsg={setmsg}  />
     </div>
   )
 }
