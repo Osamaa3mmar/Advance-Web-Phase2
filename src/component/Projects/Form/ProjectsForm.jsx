@@ -66,11 +66,7 @@ export default function ProjectsForm({closeForm,addProject}) {
   const createProject=(e)=>{
     e.preventDefault();
     addProject(project);
-    Swal.fire({
-      title: "Project created successfully !",
-      icon: "success"
-    });
-    closeForm(false);
+    
   }
  const clearForm=()=>{
   toast.info("Form cleared !");

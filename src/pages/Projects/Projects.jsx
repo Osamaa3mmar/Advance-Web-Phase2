@@ -7,22 +7,24 @@ import ProjectArea from "../../component/Projects/ProjectsArea/ProjectArea";
 import { CurrentUserContext } from "../../Context/CurrentUserContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Swal from 'sweetalert2';
+
 export default function Projects() {
-  const [modal,setModal]=useState(false);
-  const [side,setSide]=useState(false);
-  const [data,setData]=useState([]);
-  const [search,setSearch]=useState('');
-  const {user}=useContext(CurrentUserContext);
-  const getData=async()=>{
-    try{
+  const [modal, setModal] = useState(false);
+  const [side, setSide] = useState(false);
+  const [data, setData] = useState([]);
+  const [search, setSearch] = useState('');
+  const { user } = useContext(CurrentUserContext);
+  console.log(data)
+  const getData = async () => {
+    try {
       const token = localStorage.getItem('token');
-      
+
       if (!token) {
         toast.error("Authentication token not found. Please login again.");
-        setLoading(false);
         return;
       }
-      
+
       // GraphQL query for getting all projects
       const query = `
         query Projects {
@@ -43,7 +45,7 @@ export default function Projects() {
           }
         }
       `;
-      
+
       const response = await axios.post("http://localhost:4001/graphql", {
         query
       }, {
@@ -57,12 +59,13 @@ export default function Projects() {
         id: project.id,
         title: project.name,
         description: project.description,
-        students: project.users.map(user => user.id),
+        students: project.users,
         category: project.category,
         startDate: project.startDate,
         endDate: project.endDate,
         status: project.status
       }));
+
       if (user && user.role !== 'admin') {
         const filteredProjects = formattedProjects.filter(project => {
           return project.students.find(studentId => {
@@ -70,8 +73,10 @@ export default function Projects() {
           });
         });
         setData(filteredProjects);
-      } 
-    }catch(error){}
+        console.log(filteredProjects)
+      }
+      setData(formattedProjects);
+    } catch (error) { }
     // const projects=JSON.parse(localStorage.getItem('projects'));
     // if(!projects){
     //   setData([]);
@@ -87,126 +92,177 @@ export default function Projects() {
     //   setData(projects);
     // }
   }
-  const filteredData=useMemo(()=>{
-    if(!search){
+
+  const filteredData = useMemo(() => {
+    if (!search) {
       return data
     }
-    if(search.type=='title')
-    return data.filter((project)=>{
-      return project.name.toLowerCase().includes(search.title.toLowerCase());
-    })
+    if (search.type == 'title')
+      return data.filter((project) => {
+        return project.title.toLowerCase().includes(search.title.toLowerCase());
+      })
 
     else
-    return data.filter((project)=>{
-      return project.status.toLowerCase().includes(search.status.toLowerCase());
-    })
-  },[data,search]);
+      return data.filter((project) => {
+        return project.status.toLowerCase().includes(search.status.toLowerCase());
+      })
+  }, [data, search]);
+
+  const addProject = async (projectData) => {
+    try {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        toast.error("Authentication token not found. Please login again.");
+        return;
+      }
+
+      // Convert status to proper GraphQL enum format
+      let statusEnum;
 
 
-const addProject = async (projectData) => {
-  try {
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
-      toast.error("Authentication token not found. Please login again.");
-      return;
-    }
-    
-    // GraphQL mutation for creating a project
-    const query = `
-      mutation CreateProject {
-        createProject(
-          input: {
-            name: "${projectData.title}",
-            startDate: "${projectData.startDate}",
-            endDate: "${projectData.endDate}",
-            description: "${projectData.description}",
-            status: "${projectData.status}",
-            category: "${projectData.category}"
-          }
-        ) {
-          id
-          name
-          startDate
-          endDate
-          description
-          status
-          category
-          users {
+      // GraphQL mutation for creating a project
+      const query = `
+        mutation CreateProject {
+          createProject(
+            input: {
+              name: "${projectData.title}",
+              startDate: "${projectData.startDate}",
+              endDate: "${projectData.endDate}",
+              description: "${projectData.description}",
+              status: ${projectData.status},
+              category: "${projectData.category}"
+            }
+          ) {
             id
-            username
-            type
-            uid
+            name
+            startDate
+            endDate
+            description
+            status
+            category
+            users {
+              id
+              username
+              type
+              uid
+            }
           }
         }
+      `;
+
+      const response = await axios.post("http://localhost:4001/graphql", {
+        query
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.data.errors) {
+        throw new Error(response.data.errors[0].message);
       }
-    `;
-    
-    const response = await axios.post("http://localhost:4001/graphql", {
-      query
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+
+      // Get the created project from response
+      const createdProject = response.data.data.createProject;
+
+      // Assign users to the project
+      if (projectData.students && projectData.students.length > 0) {
+        for (const userId of projectData.students) {
+          const assignUserQuery = `
+            mutation AssignUserToProject {
+              assignUserToProject(projectId: "${createdProject.id}", userId: "${userId}")
+            }
+          `;
+
+          await axios.post("http://localhost:4001/graphql", {
+            query: assignUserQuery
+          }, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+        }
       }
-    });
-    
-    if (response.data.errors) {
-      throw new Error(response.data.errors[0].message);
+
+      // Format the project to match the expected structure in the app
+      const formattedProject = {
+        id: createdProject.id,
+        title: createdProject.name,
+        description: createdProject.description,
+        students: projectData.students,
+        category: createdProject.category,
+        startDate: createdProject.startDate,
+        endDate: createdProject.endDate,
+        status: createdProject.status
+      };
+
+      // Update the state with the new project
+      setData(prevData => [...prevData, formattedProject]);
+      Swal.fire({
+        title: "Project created successfully !",
+        icon: "success"
+      });
+      setModal(false);
+      // Refresh the project list
+      getData();
+
+
+      toast.success("Project created successfully!");
+    } catch (error) {
+      console.error('Error creating project:', error);
+      toast.error(`Failed to create project: ${error.message}`);
     }
-    
-    // Get the created project from response
-    const createdProject = response.data.data.createProject;
-    
-    // Format the project to match the expected structure in the app
-    const formattedProject = {
-      id: createdProject.id,
-      title: createdProject.name,
-      description: createdProject.description,
-      students: projectData.students, // Keep the selected students
-      category: createdProject.category,
-      startDate: createdProject.startDate,
-      endDate: createdProject.endDate,
-      status: createdProject.status
-    };
-    
-    // Update the state with the new project
-    setData(prevData => [...prevData, formattedProject]);
-    
-    // Refresh the project list
-    getData();
-    
-    toast.success("Project created successfully!");
-  } catch (error) {
-    console.error('Error creating project:', error);
-    toast.error(`Failed to create project: ${error.message}`);
-  }
-}
-
-  const deleteProject=(id)=>{
-    const newData=data.filter((project)=>{
-      return project.id!=id;
-    });
-    localStorage.setItem('projects',JSON.stringify(newData));
-    setData(newData);
   }
 
+  const deleteProject = async (id) => {
+    try {
+      // Use GraphQL variables instead of string interpolation
+      const query = `mutation DeleteProject($id: ID!) {
+        deleteProject(id: $id)
+      }`;
+      
+      const { data } = await axios.post("http://localhost:4001/graphql", {
+        query,
+        variables: { id } // Pass ID as a variable
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      console.log(data);
+      
+      // Check for successful deletion (returns true)
+      if (data.data && data.data.deleteProject === true) {
+        toast.success("Project deleted successfully");
+        getData();
+      } else {
+        const errorMessage = data.errors?.[0]?.message || "Failed to delete project";
+        toast.error(errorMessage);
+      }
+    }
+    catch (error) {
+      console.log(error);
+      toast.error("Error deleting project: " + (error.message || "Unknown error"));
+    }
+  }
 
-
-  useEffect(()=>{
+  useEffect(() => {
     getData();
-  },[])
+  }, [])
 
-
-  
   return (
     <div className=" scroll w-[95%] m-auto  min-h-[100dvh] ">
-      <Tools  searchTerm={setSearch} modelControl={setModal}/>
+      <Tools searchTerm={setSearch} modelControl={setModal} />
       <Modal status={modal} onClose={setModal} title={"Add New Project"}>
-      <ProjectsForm addProject={addProject} closeForm={setModal}/>
+        <ProjectsForm addProject={addProject} closeForm={setModal} />
       </Modal>
-      <SideOpen status={side} closeSide={setSide}/>
-      <ProjectArea deleteProject={deleteProject} projects={filteredData}  openSide={setSide} />
+      <SideOpen status={side} closeSide={setSide} />
+      <ProjectArea deleteProject={deleteProject} projects={filteredData} openSide={setSide} />
     </div>
   )
 }
