@@ -28,7 +28,7 @@ export default function DashboardChart({ data }) {
     datasets: [
       {
         label: "Count",
-        data: [data.projectCount, data.StudentCount, data.TasksCount, data.FinishedProjrctsCount],
+        data: [data.projectCount, data.studentCount, data.tasksCount, data.finishedProjrctsCount],
         backgroundColor: ["rgba(41,63,62,255)", "rgba(37,57,71,255)", "rgba(75,65,42,255)", "rgba(55,44,75,255)"],
         borderColor: ["rgba(57,120,120,255)", "rgba(50,127,181,255)", "rgba(184,151,68,255)", "rgba(104,73,167,255)"],
         borderWidth: 1,

@@ -1,28 +1,114 @@
-export function getData(){
+import axios from 'axios';
+
+export async function getData() {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    console.error("No token found in localStorage");
+    return {
+      studentCount: 0,
+      projectCount: 0,
+      tasksCount: 0,
+      finishedProjrctsCount: 0
+    };
+  }
+  // const studentCount = await getStudentCount(token);
+  // console.log(studentCount);
 
 
   return{
-      
-      "projectCount":JSON.parse(localStorage.getItem("projects"))?JSON.parse(localStorage.getItem("projects")).length:0,
-      "StudentCount":JSON.parse(localStorage.getItem("users"))?JSON.parse(localStorage.getItem("users")).filter(user=>user.role!="admin").length:0,
-      "TasksCount":JSON.parse(localStorage.getItem("tasks"))?JSON.parse(localStorage.getItem("tasks")).length:0,
-      "FinishedProjrctsCount":JSON.parse(localStorage.getItem("projects"))?JSON.parse(localStorage.getItem("projects")).filter(t=>getPercent(t.title)==100).length:0
+    "studentCount": await getStudentCount(token),
+    "projectCount":await getProjectCount(token),
+    "tasksCount":await getTaskCount(token),
+    "finishedProjrctsCount":await getFinishedProjectCount(token)
   }
 }
 
+async function getStudentCount(token) {
+  const query = `query Users {
+    users {
+      id
+      type
+    }
+  }`;
 
-function getPercent(project) {
-  let Tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  let count = 0;
-  let count_of_completed = 0;
+  const response = await axios.post(
+    "http://localhost:4001/graphql",
+    { query },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    }
+  );
 
-  Tasks = Tasks.filter((t) => {
-    return t.project == project;
-  });
-  count = Tasks.length;
-  Tasks = Tasks.filter((t) => t.status == "Completed");
-  count_of_completed = Tasks.length;
-  if (count == count_of_completed) return 100;
-  return Math.round((count_of_completed / count) * 10000) / 100;
-}
+  const users = response.data?.data?.users || [];
+  console.log(users.filter(user => user.type === "student").length);
   
+  return (users.filter(user => user.type === "student").length);
+}
+
+async function getProjectCount(token) {
+  const query = `query Projects {
+    projects {
+      id
+    }
+  }`;
+
+  const response = await axios.post(
+    "http://localhost:4001/graphql",
+    { query },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    }
+  );
+
+  return response.data?.data?.projects?.length || 0;
+}
+
+async function getTaskCount(token) {
+  const query = `query Tasks {
+    tasks {
+      id
+    }
+  }`;
+
+  const response = await axios.post(
+    "http://localhost:4001/graphql",
+    { query },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    }
+  );
+
+  return response.data?.data?.tasks?.length || 0;
+}
+
+async function getFinishedProjectCount(token) {
+  const query = `query Projects {
+    projects {
+      status
+    }
+  }`;
+
+  const response = await axios.post(
+    "http://localhost:4001/graphql",
+    { query },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    }
+  );
+
+  const projects = response.data?.data?.projects || [];
+  return projects.filter(p => p.status === "completed").length;
+}

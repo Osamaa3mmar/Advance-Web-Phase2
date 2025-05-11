@@ -19,7 +19,7 @@ export default function UserDashboard() {
       <div className="flex flex-col gap-2.5 w-4/5 h-full mx-auto p-1.5">
         <DashboardHeader title="Welcome to the Task Management System" date={date} />
         
-    <h1 id="Welcome_msg  text-[#e0e0e0] col-span-4 text-[8vw] text-center">Welcome ${JSON.parse(localStorage.getItem("currentUser")).username}</h1>
+    <h1 id="Welcome_msg  text-[#e0e0e0] col-span-4 text-[8vw] text-center">Welcome {JSON.parse(localStorage.getItem("currentUser")).username}</h1>
    
       </div>
     )

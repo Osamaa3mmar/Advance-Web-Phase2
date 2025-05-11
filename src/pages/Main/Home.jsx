@@ -11,11 +11,10 @@ export default function Home() {
   return (
     <>
     {user?user.role=="admin"?
-    <AdminDashboard/>
-      
+      <AdminDashboard/>
       :
       <UserDashboard/>:null}
-      </>
+    </>
     )
     
 }

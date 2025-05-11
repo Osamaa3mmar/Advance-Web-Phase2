@@ -8,10 +8,9 @@ import { CurrentUserContext } from "../../../Context/CurrentUserContext";
 import { useContext, useEffect, useState } from "react";
 
 export default function ProjectCard({openSide,project,deleteProject}) {
-
   const {user}=useContext(CurrentUserContext);
   const [percent,setPercent]=useState(0);
-
+  console.log(project)
   const confirmAlert= async ()=>{
     const answer=await Swal.fire({
       title: "Are you sure?",
@@ -37,19 +36,17 @@ export default function ProjectCard({openSide,project,deleteProject}) {
 
   }
   const makePercentage=()=>{
-    const tasks=JSON.parse(localStorage.getItem("tasks"));
+    const tasks=project?.tasks;
     if(tasks){
       let total=0;
       let complete=0;
       tasks.forEach(task=>{
-        if(task.project.id==project.id){
           total++;
           if(task.status=="completed"){
             complete++;
           }
-        }
+        
       })
-      console.log(total,complete);
       if(total==0||complete==0){
         setPercent(0);
       }
@@ -59,7 +56,7 @@ export default function ProjectCard({openSide,project,deleteProject}) {
   }
   useEffect(()=>{
     makePercentage()
-  })
+  },[project])
   return (
     <div  className={style.projectCard +" hover:scale-[1.02] duration-300 text-white bg-[#333333]"}>
         <h3 className=" text-[#027bfe] font-bold text-2xl pb-2">{project&&project.title!=''?project.title:'null'} </h3>
@@ -78,15 +75,15 @@ export default function ProjectCard({openSide,project,deleteProject}) {
         <p className=" py-1 "><span className="font-bold text-lg">Description:</span> {project&&project.description!=''?project.description:'No Description '}</p>
         <p className=" py-1"><span className="font-bold text-lg">Students:</span></p >
         <div className=" mt-2 gap-2 flex flex-wrap items-center ">
-        {project&&project.students.length>0?project.students.map((stu,index)=>{
+        {project&&project.students?.length>0?project.students.map((stu,index)=>{
           return <Chip stu={stu} key={index}/>
         }):"No Students !"}
         </div>
         <p className=" py-1"><span className="font-bold text-lg">Category:</span>{project?.category} </p>
         <ProgressPar value={percent}/>
         <div className="date my-3 flex items-center justify-between">
-            <p style={{cursor:"pointer"}} data-tooltip-id="start" data-tooltip-offset={5} className={" bg-[rgba(0,255,0,0.2)] px-[10px] py-[4px] rounded-2xl "+ style.startDate }>{project?.startDate}</p>
-            <p style={{cursor:"pointer"}} data-tooltip-id="end" data-tooltip-offset={5} className={" bg-[rgba(255,0,0,0.2)] px-[10px] py-[4px] rounded-2xl "+style.deadLineDate }>{project?.endDate}</p>
+            <p style={{cursor:"pointer"}} data-tooltip-id="start" data-tooltip-offset={5} className={" bg-[rgba(0,255,0,0.2)] px-[10px] py-[4px] rounded-2xl "+ style.startDate }>{project?.startDate ? new Date(parseInt(project.startDate)).toISOString().split('T')[0] : "N/A"}</p>
+            <p style={{cursor:"pointer"}} data-tooltip-id="end" data-tooltip-offset={5} className={" bg-[rgba(255,0,0,0.2)] px-[10px] py-[4px] rounded-2xl "+style.deadLineDate }>{project?.endDate ? new Date(parseInt(project.endDate)).toISOString().split('T')[0] : "N/A"}</p>
         </div>
         <div className="my-2 line bg-[#9c9c9c] w-[100%] h-[2px] rounded-3xl"></div>
 

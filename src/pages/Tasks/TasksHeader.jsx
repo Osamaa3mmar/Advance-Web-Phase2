@@ -1,8 +1,10 @@
 import Button from "../../component/Button/Button";
 import style from './../../component/Select/style.module.css'
+import { useContext } from "react";
+import { CurrentUserContext } from "../../Context/CurrentUserContext";
 export const TasksHeader=({setModal})=>{
 
-
+const {user}=useContext(CurrentUserContext);
 
     return(<div className=" flex flex-wrap gap-2.5 justify-between items-center">
         
@@ -14,7 +16,10 @@ export const TasksHeader=({setModal})=>{
                   <option value="onHold" className=' '>On Hold</option>
                   <option value="cancelled" className=' '>Cancelled</option>
             </select>
+            {user?.role=='admin'?
         <Button type={"primary"} onClick={()=>{setModal(true)}} text={"Create A New Task"}/>
+            
+            :''}
     </div>);
 }
 
