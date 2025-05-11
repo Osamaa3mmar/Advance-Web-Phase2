@@ -15,7 +15,6 @@ export default function Projects() {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState('');
   const { user } = useContext(CurrentUserContext);
-  console.log(data)
   const getData = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -27,23 +26,33 @@ export default function Projects() {
 
       // GraphQL query for getting all projects
       const query = `
-        query Projects {
-          projects {
+       query Projects {
+    projects {
+        id
+        name
+        startDate
+        endDate
+        description
+        status
+        category
+        users {
+            id
+            username
+            type
+            uid
+        }
+        tasks {
             id
             name
-            startDate
-            endDate
-            description
+            dueDate
             status
-            category
-            users {
-              id
-              username
-              type
-              uid
-            }
-          }
+            description
+            project_ID
+            user_ID
         }
+    }
+}
+
       `;
 
       const response = await axios.post("http://localhost:4001/graphql", {
@@ -63,19 +72,22 @@ export default function Projects() {
         category: project.category,
         startDate: project.startDate,
         endDate: project.endDate,
-        status: project.status
+        status: project.status,
+        tasks:project.tasks
       }));
+      if (user && user.role != 'admin') {
 
-      if (user && user.role !== 'admin') {
         const filteredProjects = formattedProjects.filter(project => {
-          return project.students.find(studentId => {
-            return user && studentId == user.id;
+          console.log(project, "project")
+          return project.students.find(student => {
+            console.log(student, "studentId")
+            return user && student.id == user.id;
           });
         });
         setData(filteredProjects);
         console.log(filteredProjects)
-      }
-      setData(formattedProjects);
+      } else
+        setData(formattedProjects);
     } catch (error) { }
     // const projects=JSON.parse(localStorage.getItem('projects'));
     // if(!projects){
@@ -117,23 +129,10 @@ export default function Projects() {
         return;
       }
 
-      // Convert status to proper GraphQL enum format
-      let statusEnum;
-
-
-      // GraphQL mutation for creating a project
+      // GraphQL mutation for creating a project using variables
       const query = `
-        mutation CreateProject {
-          createProject(
-            input: {
-              name: "${projectData.title}",
-              startDate: "${projectData.startDate}",
-              endDate: "${projectData.endDate}",
-              description: "${projectData.description}",
-              status: ${projectData.status},
-              category: "${projectData.category}"
-            }
-          ) {
+        mutation CreateProject($input: CreateProjectInput!) {
+          createProject(input: $input) {
             id
             name
             startDate
@@ -151,8 +150,21 @@ export default function Projects() {
         }
       `;
 
+      // Define variables for the GraphQL mutation
+      const variables = {
+        input: {
+          name: projectData.title,
+          startDate: projectData.startDate,
+          endDate: projectData.endDate,
+          description: projectData.description,
+          status: projectData.status,
+          category: projectData.category
+        }
+      };
+
       const response = await axios.post("http://localhost:4001/graphql", {
-        query
+        query,
+        variables
       }, {
         headers: {
           'Content-Type': 'application/json',
@@ -169,22 +181,51 @@ export default function Projects() {
 
       // Assign users to the project
       if (projectData.students && projectData.students.length > 0) {
-        for (const userId of projectData.students) {
-          const assignUserQuery = `
-            mutation AssignUserToProject {
-              assignUserToProject(projectId: "${createdProject.id}", userId: "${userId}")
-            }
-          `;
+        console.log(projectData.students, "nvonon")
+        console.log(`Assigning ${projectData.students.length} users to project ${createdProject.id}`);
+        console.log('User IDs:', projectData.students);
 
-          await axios.post("http://localhost:4001/graphql", {
-            query: assignUserQuery
-          }, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+        try {
+          // Use Promise.all to assign all users in parallel
+          await Promise.all(projectData.students.map(async (userId) => {
+            console.log(`Assigning user ${userId} to project ${createdProject.id}`);
+
+            const assignUserQuery = `
+             mutation AssignUserToProject {
+              assignUserToProject(projectId:${createdProject.id}, userId:${userId})
+            }`;
+
+            
+            try {
+              const response = await axios.post("http://localhost:4001/graphql", {
+                query: assignUserQuery,
+              }, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                }
+              });
+
+              console.log(`Assignment response for user ${userId}:`, response.data);
+
+              if (response.data.errors) {
+                console.log("osamaa")
+                console.error(`Error assigning user ${userId}:`, response.data.errors);
+                toast.error(`Failed to assign user ${userId}: ${response.data.errors[0].message}`);
+              } else if (response.data.data && response.data.data.assignUserToProject === true) {
+                console.log(`Successfully assigned user ${userId} to project ${createdProject.id}`);
+              }
+            } catch (assignError) {
+              console.error(`Error in assignment request for user ${userId}:`, assignError);
+              toast.error(`Assignment request failed for user ${userId}: ${assignError.message}`);
             }
-          });
+          }));
+        } catch (assignmentError) {
+          console.error('Error during user assignments:', assignmentError);
+          toast.error(`Some user assignments failed: ${assignmentError.message}`);
         }
+      } else {
+        console.log('No users to assign to the project');
       }
 
       // Format the project to match the expected structure in the app
@@ -208,8 +249,6 @@ export default function Projects() {
       setModal(false);
       // Refresh the project list
       getData();
-
-
       toast.success("Project created successfully!");
     } catch (error) {
       console.error('Error creating project:', error);
@@ -223,7 +262,7 @@ export default function Projects() {
       const query = `mutation DeleteProject($id: ID!) {
         deleteProject(id: $id)
       }`;
-      
+
       const { data } = await axios.post("http://localhost:4001/graphql", {
         query,
         variables: { id } // Pass ID as a variable
@@ -233,9 +272,8 @@ export default function Projects() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
-      
-      console.log(data);
-      
+
+
       // Check for successful deletion (returns true)
       if (data.data && data.data.deleteProject === true) {
         toast.success("Project deleted successfully");
@@ -253,7 +291,7 @@ export default function Projects() {
 
   useEffect(() => {
     getData();
-  }, [])
+  }, [user])
 
   return (
     <div className=" scroll w-[95%] m-auto  min-h-[100dvh] ">

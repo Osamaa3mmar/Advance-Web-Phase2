@@ -67,6 +67,7 @@ export default function ProjectsForm({closeForm,addProject}) {
     e.preventDefault();
     addProject(project);
     
+    closeForm(false);
   }
  const clearForm=()=>{
   toast.info("Form cleared !");

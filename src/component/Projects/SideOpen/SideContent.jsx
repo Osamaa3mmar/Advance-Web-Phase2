@@ -34,6 +34,12 @@ export default function SideContent({id}) {
             description
             project_ID
             user_ID
+            user {
+              id
+              username
+              type
+              uid
+            }
           }
         }
       }`;
@@ -48,6 +54,7 @@ export default function SideContent({id}) {
       });
       
       console.log(data);
+
       if(data.data && data.data.project) {
         setProject(data.data.project);
         setTasks(data.data.project.tasks);
@@ -64,7 +71,7 @@ export default function SideContent({id}) {
 
   return (
     <div className="text-white  h-[100%]  ">
-      <h2 className=" text-[#00bcd4] font-bold text-xl ml-[20px] mt-[10px]">{project?.title}</h2>
+      <h2 className=" text-[#00bcd4] font-bold text-xl ml-[20px] mt-[10px]">{project?.name}</h2>
       <div className="line w-[95%] m-auto h-[2px] bg-[#363636] rounded-3xl my-[10px]" ></div>
         <p className=" py-1 "><span className="font-bold text-lg">Description:</span> {project?.description}</p>
               <p className=" py-1"><span className="font-bold text-lg">Students:</span></p >
@@ -86,7 +93,7 @@ export default function SideContent({id}) {
       <div className="line w-[95%] m-auto h-[2px] bg-[#363636] rounded-3xl my-[10px]" ></div>
         <div className=" flex items-center gap-3 flex-col">
           {tasks?tasks.length>0?tasks.map((task)=>{
-            return  <TaskCard key={task.id} {...task}/>
+            return  <TaskCard key={task?.id} {...task}/>
           }):<h2 className=" text-2xl">No tasks Yet</h2>:""}
             
         </div>

@@ -8,10 +8,9 @@ import { CurrentUserContext } from "../../../Context/CurrentUserContext";
 import { useContext, useEffect, useState } from "react";
 
 export default function ProjectCard({openSide,project,deleteProject}) {
-console.log(project);
   const {user}=useContext(CurrentUserContext);
   const [percent,setPercent]=useState(0);
-
+  console.log(project)
   const confirmAlert= async ()=>{
     const answer=await Swal.fire({
       title: "Are you sure?",
@@ -37,19 +36,17 @@ console.log(project);
 
   }
   const makePercentage=()=>{
-    const tasks=JSON.parse(localStorage.getItem("tasks"));
+    const tasks=project?.tasks;
     if(tasks){
       let total=0;
       let complete=0;
       tasks.forEach(task=>{
-        if(task.project.id==project.id){
           total++;
           if(task.status=="completed"){
             complete++;
           }
-        }
+        
       })
-      console.log(total,complete);
       if(total==0||complete==0){
         setPercent(0);
       }
@@ -57,10 +54,9 @@ console.log(project);
       setPercent(Math.floor((complete/total)*100));
     }
   }
-  console.log(project)
   useEffect(()=>{
     makePercentage()
-  })
+  },[project])
   return (
     <div  className={style.projectCard +" hover:scale-[1.02] duration-300 text-white bg-[#333333]"}>
         <h3 className=" text-[#027bfe] font-bold text-2xl pb-2">{project&&project.title!=''?project.title:'null'} </h3>
