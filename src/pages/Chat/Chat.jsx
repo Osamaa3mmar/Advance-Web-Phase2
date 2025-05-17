@@ -4,9 +4,24 @@ import SideUser from "../../component/SideUser/SideUser";
 import { useState, useEffect, useContext } from "react";
 import { CurrentUserContext } from "../../Context/CurrentUserContext";
 import axios from "axios";
-import { getMessages, sendMessages } from "./chatPageHandler";
+import { getMessages} from "./chatPageHandler";
+import { io } from 'socket.io-client';
 
 
+
+
+const socket = io('ws://localhost:4001', {
+  transports: ['websocket'], // Optional: Ensures it uses WebSocket directly
+});
+
+const sendMessages=(msg)=>{
+  // if (msg && msg.sender&&msg.recever&&msg.content&&msg.content.trim().length)
+  socket.emit("messageTo", msg);
+
+  console.log(msg);
+  
+
+}
 
 
 
@@ -18,25 +33,24 @@ export default function Chat() {
   const [chatReceverName, setchatReceverName] = useState("")
   const [Messages, setMessages] = useState([]);
   const [msg, setmsg] = useState("");
+  const [isReg,setIsReg]=useState(false);
   const message = async () => {
 
 
     const newMsg = {
-      sender: user,
-      recever: reciever,
-      content: msg
+      sender_ID: user.id,
+      recever_ID: reciever.id,
+      payload: msg
     }
-    const messages =  await getMessages();
-    if (messages) {
-      messages.push(newMsg);
-      sendMessages(newMsg);
-    }
-    else {
-      sendMessages(newMsg);
-    }
+    const messages = Messages;
+    sendMessages(newMsg)
+    messages.push(newMsg);
+    console.log(messages)
+    setMessages([...messages])
+    
     message.value = "";
     setmsg("");
-    loadChat();
+    // loadChat();
   }
 
   const {user}=useContext(CurrentUserContext);
@@ -46,8 +60,8 @@ export default function Chat() {
     const tempChat = messages.filter((message) => {
       return (user?.id == message.sender_ID || user?.id == message.recever_ID) && (reciever?.id == message.recever_ID || reciever?.id == message.sender_ID);
     })
-    setMessages([...Array.from(tempChat)]);
-
+    console.log(tempChat)
+    setMessages(tempChat);
   };
 
 
@@ -93,27 +107,40 @@ const getAllStudents=async(role)=>{
 }
 
 
+  const reg=()=>{
+    if (user?.username?.trim() !== '') {
+      socket.emit('login', user?.id);
+      setIsReg(true)
+    }
+  }
 
 
 useEffect(()=>{
     getAllStudents(user?.role=="admin"?"student":"admin");
-},[user])
+
+},[user]);
+
+
+
 
 useEffect(() => {
+  reg();
   loadChat();
-  const interval = setInterval(async () => {
-    const messages = await getMessages();
-    const filteredMessages = messages.filter(message => 
-      (user?.id === message.sender_ID || user?.id === message.recever_ID) &&
-      (reciever?.id === message.sender_ID || reciever?.id === message.recever_ID)
-    );
-    setchatReceverName(reciever ? reciever.username : '');
 
-    setMessages(filteredMessages);
-  }, 1000); // Every 3 seconds, for example
+  const handler = (data) => {
+    if (data?.sender_ID === reciever?.id) {
+      console.log('📩 New message received:', data);
+      setMessages(prevMessages => [...prevMessages, data]);
+    }
+  };
 
-  return () => clearInterval(interval); // Clean up on unmount
+  socket.on('newMsg', handler);
+
+  return () => {
+    socket.off('newMsg', handler); // ✅ clean up listener
+  };
 }, [reciever, user]);
+
   return (
     <div className="chat flex gap-[15px]">
       <SideUser tempUsers={tempUsers} ID={ID} loadChat={loadChat} setID={setID} reciever={reciever} setReciever={setReciever} />

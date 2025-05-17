@@ -107,9 +107,16 @@ async function getFinishedProjectCount(token) {
       }
     }
   );
-
   const projects = response.data?.data?.projects || [];
-  return (projects.filter(async (project) => await isCompletedProject(project,token))).length;
+
+  let counter=0;
+
+  for(let i=0;i< projects.length;i++)
+    if(await isCompletedProject(projects[i],token))counter++;
+
+  console.log(counter)
+
+  return counter;
 }
 async function  isCompletedProject(project,token){
 
@@ -133,7 +140,7 @@ async function  isCompletedProject(project,token){
     }
   );
   const projectTasks = response.data?.data?.projectTasks || [];
-
+  if(projectTasks.length==0) return false
   for(let task of projectTasks){
     if (task.status != "completed"){
       return false;

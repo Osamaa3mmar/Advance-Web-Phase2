@@ -3,6 +3,8 @@ import Message from '../Message/Message'
 
 
 export default function ChatBox({message, chatReceverName,Messages,msg,setmsg}) {
+
+ 
  const container_style=`flex flex-col
   bg-[#2a2a2a]
   w-[90%]

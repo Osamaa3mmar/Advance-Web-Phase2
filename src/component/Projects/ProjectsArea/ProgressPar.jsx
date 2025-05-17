@@ -9,7 +9,7 @@ console.log(value);
          <p className=" relative z-10">
       {value}%
       </p>
-      <div className={` absolute duration-300 top-0 left-0 h-[100%] w-[${value}%] bg-[#027bfe] ` +style.progressBar }></div>
+      <div className={` absolute duration-300 top-0 left-0 h-[100%] w-[${value}%]  bg-[#027bfe] ` +style.progressBar }></div>
      
     </div>
   )
